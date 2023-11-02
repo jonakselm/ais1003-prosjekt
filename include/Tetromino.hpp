@@ -62,7 +62,7 @@ public:
 
     bool getElement(int x, int y) const
     {
-        switch (m_rotation)
+        switch (std::abs(m_rotation) % 4)
         {
             case 0:
                 return m_bricks[x+ m_width *y];

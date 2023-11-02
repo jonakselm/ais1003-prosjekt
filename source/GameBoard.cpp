@@ -43,6 +43,7 @@ void GameBoard::addToScene()
 void GameBoard::update(float dt)
 {
     m_elapsedTime += dt;
+    // Moving down and grounding blocks
     if (m_elapsedTime > m_timeThreshold)
     {
         m_elapsedTime -= m_timeThreshold;
@@ -72,7 +73,6 @@ void GameBoard::update(float dt)
             }
         }
     }
-
 }
 
 void GameBoard::clearLine(int lineNumber)
@@ -113,17 +113,46 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
         break;
     case threepp::Key::LEFT:
         // Go left
+        for (const auto &brick : m_falling)
+        {
+            brick->position.x -= 1;
+        }
+        tetromino.posX -= 1;
         break;
     case threepp::Key::RIGHT:
         // Go Right
+        for (const auto &brick : m_falling)
+        {
+            brick->position.x += 1;
+        }
+        tetromino.posX += 1;
         break;
     case threepp::Key::D:
         // Rotate Left
         tetromino.decrementRotation();
+        updateRotation();
         break;
     case threepp::Key::F:
         // Rotate right
         tetromino.incrementRotation();
+        updateRotation();
         break;
+    }
+}
+
+void GameBoard::updateRotation()
+{
+    int fallingCount = 0;
+    for (int y = 0; y < tetromino.getHeight(); y++)
+    {
+        for (int x = 0; x < tetromino.getWidth(); x++)
+        {
+            if (tetromino.getElement(x, y))
+            {
+                m_falling[fallingCount]->position.x = x + tetromino.posX;
+                m_falling[fallingCount]->position.y = y + tetromino.posY;
+                fallingCount++;
+            }
+        }
     }
 }

@@ -25,7 +25,7 @@ protected:
     bool canMove(Direction dir, const Tetromino &tetromino) const;
 
 protected:
-    void groundTetromino(const Tetromino & t);
+    void groundTetromino(const Tetromino &t);
 
 protected:
     int m_width = 10, m_height = 20;
