@@ -67,6 +67,7 @@ void GameBoard::update(float dt)
                 if (m_board[i] > 0)
                 {
                     m_bricks[i] = threepp::createBox({ float(i % m_width), float(i / m_width), 0 }, threepp::Color::green);
+                    m_scene.add(m_bricks[i]);
                 }
             }
         }
