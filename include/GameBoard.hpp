@@ -1,5 +1,5 @@
-#ifndef THREEPP_VCPKG_DEMO_GAMEBOARD_HPP
-#define THREEPP_VCPKG_DEMO_GAMEBOARD_HPP
+#ifndef THREEPP_TETRIS_GAMEBOARD_HPP
+#define THREEPP_TETRIS_GAMEBOARD_HPP
 
 #include "Board.hpp"
 #include "Tetromino.hpp"
@@ -31,4 +31,4 @@ private:
     float m_timeThreshold = 1;
 };
 
-#endif//THREEPP_VCPKG_DEMO_GAMEBOARD_HPP
+#endif//THREEPP_TETRIS_GAMEBOARD_HPP

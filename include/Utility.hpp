@@ -1,5 +1,5 @@
-#ifndef THREEPP_VCPKG_DEMO_UTILITY_HPP
-#define THREEPP_VCPKG_DEMO_UTILITY_HPP
+#ifndef THREEPP_TETRIS_UTILITY_HPP
+#define THREEPP_TETRIS_UTILITY_HPP
 
 #include "threepp/threepp.hpp"
 
@@ -17,4 +17,4 @@ namespace threepp
     }
 } // namespace
 
-#endif//THREEPP_VCPKG_DEMO_UTILITY_HPP
+#endif//THREEPP_TETRIS_UTILITY_HPP

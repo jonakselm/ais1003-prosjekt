@@ -1,7 +1,7 @@
 
 
-#ifndef THREEPP_VCPKG_DEMO_TETROMINO_HPP
-#define THREEPP_VCPKG_DEMO_TETROMINO_HPP
+#ifndef THREEPP_TETRIS_TETROMINO_HPP
+#define THREEPP_TETRIS_TETROMINO_HPP
 
 #include <array>
 #include <algorithm>
@@ -89,4 +89,4 @@ private:
     int m_rotation = 0;
 };
 
-#endif//THREEPP_VCPKG_DEMO_TETROMINO_HPP
+#endif//THREEPP_TETRIS_TETROMINO_HPP

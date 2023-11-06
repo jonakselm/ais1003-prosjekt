@@ -1,5 +1,5 @@
-#ifndef THREEPP_VCPKG_DEMO_BOARD_HPP
-#define THREEPP_VCPKG_DEMO_BOARD_HPP
+#ifndef THREEPP_TETRIS_BOARD_HPP
+#define THREEPP_TETRIS_BOARD_HPP
 
 #include "Tetromino.hpp"
 #include <array>
@@ -32,4 +32,4 @@ protected:
     std::array<int, BOARD_SIZE> m_board;
 };
 
-#endif//THREEPP_VCPKG_DEMO_BOARD_HPP
+#endif//THREEPP_TETRIS_BOARD_HPP
