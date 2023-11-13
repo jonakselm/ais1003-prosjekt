@@ -3,18 +3,15 @@
 
 #include "threepp/threepp.hpp"
 
-namespace threepp
-{
-    inline auto createBox(const Vector3& pos, const Color& color)
-    {
-        auto geometry = BoxGeometry::create();
-        auto material = MeshBasicMaterial::create();
-        material->color.copy(color);
-        auto mesh = Mesh::create(geometry, material);
-        mesh->position.copy(pos);
 
-        return mesh;
-    }
-} // namespace
+inline auto createBox(const threepp::Vector3& pos, const threepp::Color& color)
+{
+    auto geometry = threepp::BoxGeometry::create();
+    auto material = threepp::MeshBasicMaterial::create();
+    material->color.copy(color);
+    auto mesh = threepp::Mesh::create(geometry, material);
+    mesh->position.copy(pos);
+    return mesh;
+}
 
 #endif//THREEPP_TETRIS_UTILITY_HPP

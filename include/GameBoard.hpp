@@ -28,7 +28,7 @@ private:
     Tetromino tetromino;
     std::array<std::shared_ptr<threepp::Mesh>, 4> m_falling;
     float m_elapsedTime = 0;
-    float m_timeThreshold = 1;
+    float m_timeThreshold = 0.25;
 };
 
 #endif//THREEPP_TETRIS_GAMEBOARD_HPP

@@ -9,7 +9,6 @@ class Board
 {
 public:
     enum class Direction { Down, Left, Right };
-protected:
     static constexpr int BOARD_SIZE = 200;
 
 public:
@@ -22,9 +21,8 @@ protected:
 
     virtual void update(float dt) = 0;
 
-    bool canMove(Direction dir, const Tetromino &tetromino) const;
+    bool canMove(Direction dir, const Tetromino & t) const;
 
-protected:
     void groundTetromino(const Tetromino &t);
 
 protected:

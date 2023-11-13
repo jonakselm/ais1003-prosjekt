@@ -19,7 +19,7 @@ GameBoard::GameBoard(threepp::Scene &scene)
         {
             if (tetromino.getElement(x, y))
             {
-                m_falling[fallingCount++] = threepp::createBox({float(x), float(y), 0}, threepp::Color::green);
+                m_falling[fallingCount++] = createBox({float(x), float(y), 0}, threepp::Color::green);
             }
         }
     }
@@ -67,7 +67,7 @@ void GameBoard::update(float dt)
             {
                 if (m_board[i] > 0)
                 {
-                    m_bricks[i] = threepp::createBox({ float(i % m_width), float(i / m_width), 0 }, threepp::Color::green);
+                    m_bricks[i] = createBox({ float(i % m_width), float(i / m_width), 0 }, threepp::Color::green);
                     m_scene.add(m_bricks[i]);
                 }
             }
@@ -113,19 +113,25 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
         break;
     case threepp::Key::LEFT:
         // Go left
-        for (const auto &brick : m_falling)
+        if (canMove(Direction::Left, tetromino))
         {
-            brick->position.x -= 1;
+            for (const auto &brick : m_falling)
+            {
+                brick->position.x -= 1;
+            }
+            tetromino.posX -= 1;
         }
-        tetromino.posX -= 1;
         break;
     case threepp::Key::RIGHT:
         // Go Right
-        for (const auto &brick : m_falling)
+        if (canMove(Direction::Right, tetromino))
         {
-            brick->position.x += 1;
+            for (const auto &brick : m_falling)
+            {
+                brick->position.x += 1;
+            }
+            tetromino.posX += 1;
         }
-        tetromino.posX += 1;
         break;
     case threepp::Key::D:
         // Rotate Left

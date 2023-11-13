@@ -62,7 +62,7 @@ public:
 
     bool getElement(int x, int y) const
     {
-        switch (std::abs(m_rotation) % 4)
+        switch (m_rotation % 4)
         {
             case 0:
                 return m_bricks[x+ m_width *y];
@@ -86,7 +86,7 @@ public:
 private:
     std::array<bool, 9> m_bricks;
     int m_width = 3, m_height = 3;
-    int m_rotation = 0;
+    unsigned int m_rotation = 0;
 };
 
 #endif//THREEPP_TETRIS_TETROMINO_HPP

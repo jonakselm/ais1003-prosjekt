@@ -52,38 +52,74 @@ void Board::groundTetromino(const Tetromino & t)
         }
     }
 }
-bool Board::canMove(Board::Direction dir, const Tetromino &tetromino) const
+bool Board::canMove(Board::Direction dir, const Tetromino & t) const
 {
-    switch (dir)
+    std::vector<bool> v;
+    const int width = t.getWidth();
+    for (int y = 0; y < t.getHeight(); y++)
     {
-    case Direction::Down:
-    {
-        const int width = tetromino.getWidth();
-        for (int y = 0; y < tetromino.getHeight(); y++)
+        for (int x = 0; x < width; x++)
         {
-            for (int x = 0; x < width; x++)
+            int nextX = 0;
+            int nextY = 0;
+            v.push_back(t.getElement(x, y));
+            bool hasBrick = t.getElement(x, y);
+            if (hasBrick)
             {
-                int totalX = x + tetromino.posX;
-                int noge = tetromino.posY;
-                int nextY = y + tetromino.posY + 1;
-                bool hasBrick = tetromino.getElement(x, y);
-                bool boardHasBrick = m_board[totalX + nextY * m_width];
-                if ((hasBrick && boardHasBrick) ||
-                    (nextY > m_height))
+                // Constructs nextX and nextY
+                switch (dir)
+                {
+                case Direction::Down:
+                {
+                    nextX = x + t.posX;
+                    nextY = y + t.posY + 1;
+                }
+                break;
+                case Direction::Left:
+                {
+                    nextX = x + t.posX - 1;
+                    nextY = y + t.posY;
+                    break;
+                }
+                case Direction::Right:
+                {
+                    nextX = x + t.posX + 1;
+                    nextY = y + t.posY;
+                    break;
+                }
+                }
+
+                // Conditionals
+                unsigned int index = nextX + nextY * m_width;
+                if (index > m_board.size())
                 {
                     return false;
                 }
+                bool boardHasBrick = m_board[index];
+                switch (dir)
+                {
+                case Direction::Down:
+                    if ((boardHasBrick) ||
+                        (nextY > m_height))
+                    {
+                        return false;
+                    }
+                    break;
+                case Direction::Left:
+                    if (nextX < 0)
+                    {
+                        return false;
+                    }
+                    break;
+                case Direction::Right:
+                    if (nextX >= m_width)
+                    {
+                        return false;
+                    }
+                    break;
+                }
             }
         }
-    }
-    case Direction::Left:
-    {
-
-    }
-    case Direction::Right:
-    {
-
-    }
     }
     return true;
 }
