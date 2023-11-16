@@ -1,7 +1,7 @@
 
-#include "threepp/threepp.hpp"
-#include "GameBoard.hpp"
+#include "Board/GameBoard.hpp"
 #include "Utility.hpp"
+#include "threepp/threepp.hpp"
 
 using namespace threepp;
 
@@ -9,7 +9,7 @@ int main()
 {
     Canvas canvas("Tetris", {{"aa", 4}});
     GLRenderer renderer(canvas.size());
-    renderer.setClearColor(Color::aliceblue);
+    renderer.setClearColor(Color::black);
 
     // Funke kun med partall
     int size = 20;

@@ -1,7 +1,7 @@
 #ifndef THREEPP_TETRIS_BOARD_HPP
 #define THREEPP_TETRIS_BOARD_HPP
 
-#include "Tetromino.hpp"
+#include "Tetromino/Tetromino.hpp"
 #include <array>
 #include <vector>
 
@@ -11,12 +11,11 @@ public:
     enum class Direction { Down, Left, Right };
     static constexpr int BOARD_SIZE = 200;
 
-public:
+protected:
     Board();
 
     virtual void clearLine(int lineNumber) = 0;
 
-protected:
     const virtual std::array<int, BOARD_SIZE> &getBoard() const;
 
     virtual void update(float dt) = 0;
@@ -25,7 +24,7 @@ protected:
 
     void groundTetromino(const Tetromino &t);
 
-protected:
+
     int m_width = 10, m_height = 20;
     std::array<int, BOARD_SIZE> m_board;
 };

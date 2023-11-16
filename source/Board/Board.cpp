@@ -1,4 +1,4 @@
-#include "Board.hpp"
+#include "Board/Board.hpp"
 #include <algorithm>
 
 Board::Board()
@@ -9,11 +9,11 @@ Board::Board()
     {
         cell = 1;
     }*/
-    /*for (int y = 0; y < tetromino.getHeight(); y++)
+    /*for (int y = 0; y < m_tetromino.getHeight(); y++)
     {
-        for (int x = 0; x < tetromino.getWidth(); x++)
+        for (int x = 0; x < m_tetromino.getWidth(); x++)
         {
-            if (tetromino.getElement(x, y))
+            if (m_tetromino.getElement(x, y))
             {
                 m_board[x + y * m_width] = 1;
             }
@@ -24,10 +24,9 @@ Board::Board()
 void Board::clearLine(int lineNumber)
 {
     auto start = m_board.begin() + lineNumber * m_width;
-    auto end = m_board.begin() + (lineNumber + 1) * m_width;
+    auto end = start + m_width;
     std::fill(start, end, 0);
-    long zeros = std::count(m_board.begin(), start, 0);
-    std::rotate(m_board.begin() + zeros, start, m_board.end());
+    std::rotate(m_board.begin(), start, end);
 }
 
 const std::array<int, 200>& Board::getBoard() const
@@ -51,7 +50,19 @@ void Board::groundTetromino(const Tetromino & t)
             }
         }
     }
+    for (int i = 0; i < m_height; i++)
+    {
+        int rowStartIndex = i * m_width;
+        const auto rowBegin = m_board.begin() + rowStartIndex;
+        int amountFilled = std::count(rowBegin, rowBegin + m_width, 1);
+        if (amountFilled >= 10)
+        {
+            clearLine(i);
+            Board::clearLine(i);
+        }
+    }
 }
+
 bool Board::canMove(Board::Direction dir, const Tetromino & t) const
 {
     std::vector<bool> v;

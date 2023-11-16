@@ -9,7 +9,7 @@ inline auto createBox(const threepp::Vector3& pos, const threepp::Color& color)
     auto geometry = threepp::BoxGeometry::create();
     auto material = threepp::MeshBasicMaterial::create();
     material->color.copy(color);
-    auto mesh = threepp::Mesh::create(geometry, material);
+    auto mesh = std::make_unique<threepp::Mesh>(threepp::Mesh(geometry, material));
     mesh->position.copy(pos);
     return mesh;
 }
