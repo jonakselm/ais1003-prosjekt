@@ -23,14 +23,6 @@ int main()
     GameBoard board(*scene);
     canvas.addKeyListener(&board);
 
-    auto group = Group::create();
-    for (int i = 0; i < size; i++)
-    {
-        group->add(createBox({float(i), float(i), 0}, Color(255 * i % 2 ? 1 : 0, 255 * i % 2 == 0 ? 1 : 0, 0)));
-    }
-    scene->add(group);
-    board.addToScene();
-
     float time = 0;
 
     Clock clock;

@@ -11,8 +11,6 @@ class GameBoard : public Board, public threepp::KeyListener
 public:
     GameBoard(threepp::Scene &scene);
 
-    void addToScene();
-
     void update(float dt) override;
 
     void clearLine(int lineNumber) override;
@@ -24,11 +22,13 @@ private:
     void onKeyReleased(threepp::KeyEvent keyEvent) override;
     void onKeyRepeat(threepp::KeyEvent keyEvent) override;
 
-    void updateRotation();
+    void createTetromino();
 
     void updateTetromino();
 
     void moveTetromino(int x, int y);
+
+    void updateRotation();
 
     threepp::Color getColorFromIndex(Tetromino::Color index);
 
