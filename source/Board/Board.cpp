@@ -63,39 +63,44 @@ void Board::groundTetromino(const Tetromino & t)
     }
 }
 
-bool Board::canMove(Board::Direction dir, const Tetromino & t) const
+bool Board::canDo(Action action, const Tetromino & t) const
 {
-    std::vector<bool> v;
     const int width = t.getWidth();
     for (int y = 0; y < t.getHeight(); y++)
     {
         for (int x = 0; x < width; x++)
         {
-            int nextX = 0;
-            int nextY = 0;
-            v.push_back(t.getElement(x, y));
-            bool hasBrick = t.getElement(x, y);
+            unsigned int rotation = t.getRotation();
+            switch (action)
+            {
+            case Action::RotateLeft:
+                rotation -= 1;
+                break;
+            case Action::RotateRight:
+                rotation += 1;
+                break;
+            }
+            int nextX = x + t.posX;
+            int nextY = y + t.posY;
+            bool hasBrick = t.getElement(x, y, rotation);
             if (hasBrick)
             {
                 // Constructs nextX and nextY
-                switch (dir)
+                switch (action)
                 {
-                case Direction::Down:
+                case Action::MoveDown:
                 {
-                    nextX = x + t.posX;
-                    nextY = y + t.posY + 1;
+                    nextY += 1;
                 }
                 break;
-                case Direction::Left:
+                case Action::MoveLeft:
                 {
-                    nextX = x + t.posX - 1;
-                    nextY = y + t.posY;
+                    nextX -= 1;
                     break;
                 }
-                case Direction::Right:
+                case Action::MoveRight:
                 {
-                    nextX = x + t.posX + 1;
-                    nextY = y + t.posY;
+                    nextX += 1;
                     break;
                 }
                 }
@@ -107,22 +112,25 @@ bool Board::canMove(Board::Direction dir, const Tetromino & t) const
                     return false;
                 }
                 bool boardHasBrick = m_board[index];
-                switch (dir)
+                if (boardHasBrick)
                 {
-                case Direction::Down:
-                    if ((boardHasBrick) ||
-                        (nextY > m_height))
+                    return false;
+                }
+                switch (action)
+                {
+                case Action::MoveDown:
+                    if ((nextY > m_height))
                     {
                         return false;
                     }
                     break;
-                case Direction::Left:
+                case Action::MoveLeft:
                     if (nextX < 0)
                     {
                         return false;
                     }
                     break;
-                case Direction::Right:
+                case Action::MoveRight:
                     if (nextX >= m_width)
                     {
                         return false;

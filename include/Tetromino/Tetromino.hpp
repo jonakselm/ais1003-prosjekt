@@ -53,29 +53,39 @@ public:
         return m_height;
     }
 
-    bool getElement(int x, int y) const
+    unsigned int getRotation() const
     {
-        switch (m_rotation % 4)
-        {
-            case 0:
-                return m_cells[x + m_width * y];
-                break;
-            case 1:
-                return m_cells[(m_height - 1 - x) * m_width + y];
-                break;
-            case 2:
-                return m_cells[(m_height - y) * m_width - 1 - x];
-                break;
-            case 3:
-                return m_cells[m_width - 1 + x * m_width - y];
-                break;
-        }
-        return false;
+        return m_rotation;
     }
 
     Color getColor() const
     {
         return m_color;
+    }
+
+    bool getElement(int x, int y, unsigned int rotation) const
+    {
+        switch (rotation % 4)
+        {
+        case 0:
+            return m_cells[x + m_width * y];
+            break;
+        case 1:
+            return m_cells[(m_height - 1 - x) * m_width + y];
+            break;
+        case 2:
+            return m_cells[(m_height - y) * m_width - 1 - x];
+            break;
+        case 3:
+            return m_cells[m_width - 1 + x * m_width - y];
+            break;
+        }
+        return false;
+    }
+
+    bool getElement(int x, int y) const
+    {
+        return getElement(x, y, m_rotation);
     }
 
 

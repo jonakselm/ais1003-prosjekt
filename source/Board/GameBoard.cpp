@@ -10,7 +10,7 @@ GameBoard::GameBoard(threepp::Scene &scene)
         m_background[i] = createBox({ float(i % m_width), float(i / m_width), 0 }, threepp::Color::gray);
         m_scene.add(*m_background[i]);
     }
-    m_tetromino = getTetrominoFromIndex(std::rand() % Tetros::Size);
+    m_tetromino = getTetrominoFromIndex(std::rand() % static_cast<int>(Tetros::Size));
     updateTetromino();
 }
 
@@ -35,17 +35,30 @@ void GameBoard::addToScene()
 void GameBoard::update(float dt)
 {
     m_elapsedTime += dt;
+    // Check if falling piece is out of bounds and reposition it accordingly
+    int deltaX = 0;
+    for (const auto &brick : m_falling)
+    {
+        if (brick->position.x < 0)
+        {
+            deltaX = -brick->position.x;
+        }
+        else if (brick->position.x > m_width)
+        {
+            deltaX = m_width - brick->position.x;
+        }
+    }
+    if (deltaX != 0)
+    {
+        moveTetromino(deltaX, 0);
+    }
     // Moving down and grounding blocks
     if (m_elapsedTime > m_timeThreshold)
     {
         m_elapsedTime -= m_timeThreshold;
-        if (canMove(Direction::Down, *m_tetromino))
+        if (canDo(Action::MoveDown, *m_tetromino))
         {
-            m_tetromino->posY += 1;
-            for (auto &brick : m_falling)
-            {
-                brick->position.y += 1;
-            }
+            moveTetromino(0, 1);
         }
         else
         {
@@ -62,7 +75,7 @@ void GameBoard::update(float dt)
             }
             // Reset position since we don't change size of array
             m_tetromino.reset();
-            m_tetromino = getTetrominoFromIndex(std::rand() % Tetros::Size);
+            m_tetromino = getTetrominoFromIndex(std::rand() % static_cast<int>(Tetros::Size));
             for (auto &brick : m_falling)
             {
                 m_scene.remove(*brick);
@@ -80,7 +93,8 @@ void GameBoard::clearLine(int lineNumber)
 {
     // Can't clear line if line isn't full
     auto start = m_bricks.begin() + lineNumber * m_width;
-    auto end = m_bricks.begin() + (lineNumber + 1) * m_width;
+    auto end = start + m_width;
+    // Remove brick from scene
     std::for_each(start, end, [this](std::unique_ptr<threepp::Mesh> &brick)
     {
         if (brick)
@@ -89,7 +103,10 @@ void GameBoard::clearLine(int lineNumber)
             brick.reset();
         }
     });
+    // Move the rendered bricks to the correct place in the array
+    // Effectively move all bricks above go one down
     std::rotate(m_bricks.begin(), start, end);
+    // Make all rendered bricks above the cleared line go one down in grid space
     std::for_each(m_bricks.begin(), end, [](std::unique_ptr<threepp::Mesh> &brick)
     {
         if (brick)
@@ -112,35 +129,33 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
         break;
     case threepp::Key::LEFT:
         // Go left
-        if (canMove(Direction::Left, *m_tetromino))
+        if (canDo(Action::MoveLeft, *m_tetromino))
         {
-            for (const auto &brick : m_falling)
-            {
-                brick->position.x -= 1;
-            }
-            m_tetromino->posX -= 1;
+            moveTetromino(-1, 0);
         }
         break;
     case threepp::Key::RIGHT:
         // Go Right
-        if (canMove(Direction::Right, *m_tetromino))
+        if (canDo(Action::MoveRight, *m_tetromino))
         {
-            for (const auto &brick : m_falling)
-            {
-                brick->position.x += 1;
-            }
-            m_tetromino->posX += 1;
+            moveTetromino(1, 0);
         }
         break;
     case threepp::Key::D:
         // Rotate Left
-        m_tetromino->decrementRotation();
-        updateRotation();
+        if (canDo(Action::RotateLeft, *m_tetromino))
+        {
+            m_tetromino->decrementRotation();
+            updateRotation();
+        }
         break;
     case threepp::Key::F:
         // Rotate right
-        m_tetromino->incrementRotation();
-        updateRotation();
+        if (canDo(Action::RotateRight, *m_tetromino))
+        {
+            m_tetromino->incrementRotation();
+            updateRotation();
+        }
         break;
     }
 }
@@ -154,13 +169,14 @@ void GameBoard::updateRotation()
         {
             if (m_tetromino->getElement(x, y))
             {
-                m_falling[fallingCount]->position.x = x + m_tetromino->posX;
-                m_falling[fallingCount]->position.y = y + m_tetromino->posY;
-                fallingCount++;
+                auto &brick = *m_falling[fallingCount++];
+                brick.position.x = x + m_tetromino->posX;
+                brick.position.y = y + m_tetromino->posY;
             }
         }
     }
 }
+
 void GameBoard::updateTetromino()
 {
     int fallingCount = 0;
@@ -176,9 +192,19 @@ void GameBoard::updateTetromino()
     }
 }
 
+void GameBoard::moveTetromino(int x, int y)
+{
+    m_tetromino->posX += x;
+    m_tetromino->posY += y;
+    for (auto &brick : m_falling)
+    {
+        brick->position += { static_cast<float>(x), static_cast<float>(y), 0 };
+    }
+}
+
 std::unique_ptr<Tetromino> GameBoard::getTetrominoFromIndex(unsigned int index)
 {
-    switch (index)
+    switch (static_cast<Tetros>(index))
     {
     default:
     case Tetros::I:

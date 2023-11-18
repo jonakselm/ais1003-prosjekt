@@ -18,13 +18,15 @@ public:
     void clearLine(int lineNumber) override;
 
 private:
-    enum Tetros { I, O, T, J, L, S, Z, Size };
+    enum class Tetros { I, O, T, J, L, S, Z, Size };
 
     void onKeyPressed(threepp::KeyEvent keyEvent) override;
 
     void updateRotation();
 
     void updateTetromino();
+
+    void moveTetromino(int x, int y);
 
     threepp::Color getColorFromIndex(Tetromino::Color index);
 
@@ -33,6 +35,7 @@ private:
 
     threepp::Scene &m_scene;
     std::array<std::unique_ptr<threepp::Mesh>, BOARD_SIZE> m_background;
+    // 0 - 9 is top row, while back() etc. is bottom row
     std::array<std::unique_ptr<threepp::Mesh>, BOARD_SIZE> m_bricks;
     std::unique_ptr<Tetromino> m_tetromino;
     std::array<std::unique_ptr<threepp::Mesh>, 4> m_falling;
