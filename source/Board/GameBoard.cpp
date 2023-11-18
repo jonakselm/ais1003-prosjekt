@@ -122,10 +122,14 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
     {
     case threepp::Key::UP:
         // Instant place down
+        while (canDo(Action::MoveDown, *m_tetromino))
+        {
+            moveTetromino(0, 1);
+        }
         break;
     case threepp::Key::DOWN:
-        // Fall faster
-        //m_timeThreshold = 0.5f;
+        // Move faster
+        m_timeThreshold = 0.05;
         break;
     case threepp::Key::LEFT:
         // Go left
@@ -155,6 +159,38 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
         {
             m_tetromino->incrementRotation();
             updateRotation();
+        }
+        break;
+    }
+}
+
+void GameBoard::onKeyReleased(threepp::KeyEvent keyEvent)
+{
+    switch (keyEvent.key)
+    {
+        // Set time threshold back to normal
+    case threepp::Key::DOWN:
+        m_timeThreshold = 0.25;
+        break;
+    }
+}
+
+void GameBoard::onKeyRepeat(threepp::KeyEvent keyEvent)
+{
+    switch (keyEvent.key)
+    {
+    case threepp::Key::LEFT:
+        // Go left
+        if (canDo(Action::MoveLeft, *m_tetromino))
+        {
+            moveTetromino(-1, 0);
+        }
+        break;
+    case threepp::Key::RIGHT:
+        // Go Right
+        if (canDo(Action::MoveRight, *m_tetromino))
+        {
+            moveTetromino(1, 0);
         }
         break;
     }

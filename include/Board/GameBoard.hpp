@@ -21,6 +21,8 @@ private:
     enum class Tetros { I, O, T, J, L, S, Z, Size };
 
     void onKeyPressed(threepp::KeyEvent keyEvent) override;
+    void onKeyReleased(threepp::KeyEvent keyEvent) override;
+    void onKeyRepeat(threepp::KeyEvent keyEvent) override;
 
     void updateRotation();
 
