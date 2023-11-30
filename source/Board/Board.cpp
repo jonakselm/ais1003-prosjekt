@@ -9,13 +9,13 @@ Board::Board()
     {
         cell = 1;
     }*/
-    /*for (int y = 0; y < m_tetromino.getHeight(); y++)
+    /*for (int y = 0; y < m_currentTetromino.getHeight(); y++)
     {
-        for (int x = 0; x < m_tetromino.getWidth(); x++)
+        for (int x = 0; x < m_currentTetromino.getWidth(); x++)
         {
-            if (m_tetromino.getElement(x, y))
+            if (m_currentTetromino.getElement(x, y))
             {
-                m_board[x + y * m_width] = 1;
+                m_board[x + y * WIDTH] = 1;
             }
         }
     }*/
@@ -23,8 +23,8 @@ Board::Board()
 
 void Board::clearLine(int lineNumber)
 {
-    auto start = m_board.begin() + lineNumber * m_width;
-    auto end = start + m_width;
+    auto start = m_board.begin() + lineNumber * WIDTH;
+    auto end = start + WIDTH;
     std::fill(start, end, 0);
     std::rotate(m_board.begin(), start, end);
 }
@@ -34,52 +34,54 @@ const std::array<int, 200>& Board::getBoard() const
     return m_board;
 }
 
-void Board::update(float dt)
+void Board::resetBoard()
 {
+    std::fill(m_board.begin(), m_board.end(), 0);
 }
 
-void Board::groundTetromino(const Tetromino & t)
+int Board::groundTetromino(const Tetromino & t)
 {
     for (int y = 0; y < t.getHeight(); y++)
     {
         for (int x = 0; x < t.getWidth(); x++)
         {
-            if (t.getElement(x, y))
+            if (int color = t.getElement(x, y))
             {
-                m_board[x + t.posX + (y + t.posY) * m_width] = 1;
+                m_board[x + t.posX + (y + t.posY) * WIDTH] = color;
             }
         }
     }
-    for (int i = 0; i < m_height; i++)
+    int flags = 0;
+    for (int i = 0; i < HEIGHT; i++)
     {
-        int rowStartIndex = i * m_width;
+        int rowStartIndex = i * WIDTH;
         const auto rowBegin = m_board.begin() + rowStartIndex;
-        int amountFilled = std::count(rowBegin, rowBegin + m_width, 1);
-        if (amountFilled >= 10)
+        if (std::all_of(rowBegin, rowBegin + WIDTH, [](bool b){ return b == 1; }))
         {
-            clearLine(i);
-            Board::clearLine(i);
+            flags += 1 << i;
         }
     }
+    return flags;
 }
 
-bool Board::canDo(Action action, const Tetromino & t) const
+bool Board::canDo(Action action, const Tetromino &t) const
 {
     const int width = t.getWidth();
+    // Set up for checking a rotated tetro
+    unsigned int rotation = t.getRotation();
+    switch (action)
+    {
+    case Action::RotateLeft:
+        rotation -= 1;
+        break;
+    case Action::RotateRight:
+        rotation += 1;
+        break;
+    }
     for (int y = 0; y < t.getHeight(); y++)
     {
         for (int x = 0; x < width; x++)
         {
-            unsigned int rotation = t.getRotation();
-            switch (action)
-            {
-            case Action::RotateLeft:
-                rotation -= 1;
-                break;
-            case Action::RotateRight:
-                rotation += 1;
-                break;
-            }
             int nextX = x + t.posX;
             int nextY = y + t.posY;
             bool hasBrick = t.getElement(x, y, rotation);
@@ -106,7 +108,7 @@ bool Board::canDo(Action action, const Tetromino & t) const
                 }
 
                 // Conditionals
-                unsigned int index = nextX + nextY * m_width;
+                unsigned int index = nextX + nextY * WIDTH;
                 if (index > m_board.size())
                 {
                     return false;
@@ -116,10 +118,11 @@ bool Board::canDo(Action action, const Tetromino & t) const
                 {
                     return false;
                 }
+                // Action specific conditionals
                 switch (action)
                 {
                 case Action::MoveDown:
-                    if ((nextY > m_height))
+                    if ((nextY > HEIGHT))
                     {
                         return false;
                     }
@@ -131,7 +134,7 @@ bool Board::canDo(Action action, const Tetromino & t) const
                     }
                     break;
                 case Action::MoveRight:
-                    if (nextX >= m_width)
+                    if (nextX >= WIDTH)
                     {
                         return false;
                     }

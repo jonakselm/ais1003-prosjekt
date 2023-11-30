@@ -1,13 +1,13 @@
 #include "Board/GameBoard.hpp"
 #include "Utility.hpp"
 
-GameBoard::GameBoard(threepp::Scene &scene)
+/*GameBoard::GameBoard(threepp::Scene &scene)
     :
     m_scene(scene)
 {
     for (int i = 0; i < m_background.size(); i++)
     {
-        m_background[i] = createBox({ float(i % m_width), float(i / m_width), 0 }, threepp::Color::gray);
+        m_background[i] = createBox({ float(i % WIDTH), float(i / WIDTH), 0 }, threepp::Color::gray);
         m_scene.add(*m_background[i]);
     }
     createTetromino();
@@ -24,9 +24,9 @@ void GameBoard::update(float dt)
         {
             deltaX = -brick->position.x;
         }
-        else if (brick->position.x > m_width)
+        else if (brick->position.x > WIDTH)
         {
-            deltaX = m_width - brick->position.x;
+            deltaX = WIDTH - brick->position.x;
         }
     }
     if (deltaX != 0)
@@ -37,19 +37,32 @@ void GameBoard::update(float dt)
     if (m_elapsedTime > m_timeThreshold)
     {
         m_elapsedTime -= m_timeThreshold;
-        if (canDo(Action::MoveDown, *m_tetromino))
+        if (canDo(Action::MoveDown, *m_currentTetromino))
         {
             moveTetromino(0, 1);
         }
         else
         {
-            Board::groundTetromino(*m_tetromino);
+            int flags = Board::groundTetromino(*m_currentTetromino);
+            if (flags)
+            {
+                for (int i = 0; i < HEIGHT; i++)
+                {
+                    if (flags & 1 << i)
+                    {
+                        clearLine(i);
+                        m_lines++;
+                    }
+                }
+            }
+            m_level = std::min(m_lines / 10, 6);
+            m_timeThreshold = m_times.at(m_level);
             for (int i = 0; i < m_board.size(); i++)
             {
                 // If it exists in board, but haven't been added to bricks yet
                 if (m_board[i] > 0 && !m_bricks[i])
                 {
-                    threepp::Color color = getColorFromIndex(m_tetromino->getColor());
+                    threepp::Color color = getColorFromIndex(m_currentTetromino->getColor());
                     m_bricks[i] = createBox({ float(i % m_width), float(i / m_width), 0 }, color);
                     m_scene.add(*m_bricks[i]);
                 }
@@ -59,7 +72,7 @@ void GameBoard::update(float dt)
             {
                 m_scene.remove(*brick);
             }
-            m_tetromino.reset();
+            m_currentTetromino.reset();
             createTetromino();
         }
     }
@@ -98,7 +111,7 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
     {
     case threepp::Key::UP:
         // Instant place down
-        while (canDo(Action::MoveDown, *m_tetromino))
+        while (canDo(Action::MoveDown, *m_currentTetromino))
         {
             moveTetromino(0, 1);
         }
@@ -109,31 +122,31 @@ void GameBoard::onKeyPressed(threepp::KeyEvent keyEvent)
         break;
     case threepp::Key::LEFT:
         // Go left
-        if (canDo(Action::MoveLeft, *m_tetromino))
+        if (canDo(Action::MoveLeft, *m_currentTetromino))
         {
             moveTetromino(-1, 0);
         }
         break;
     case threepp::Key::RIGHT:
         // Go Right
-        if (canDo(Action::MoveRight, *m_tetromino))
+        if (canDo(Action::MoveRight, *m_currentTetromino))
         {
             moveTetromino(1, 0);
         }
         break;
     case threepp::Key::D:
         // Rotate Left
-        if (canDo(Action::RotateLeft, *m_tetromino))
+        if (canDo(Action::RotateLeft, *m_currentTetromino))
         {
-            m_tetromino->decrementRotation();
+            m_currentTetromino->decrementRotation();
             updateRotation();
         }
         break;
     case threepp::Key::F:
         // Rotate right
-        if (canDo(Action::RotateRight, *m_tetromino))
+        if (canDo(Action::RotateRight, *m_currentTetromino))
         {
-            m_tetromino->incrementRotation();
+            m_currentTetromino->incrementRotation();
             updateRotation();
         }
         break;
@@ -157,14 +170,14 @@ void GameBoard::onKeyRepeat(threepp::KeyEvent keyEvent)
     {
     case threepp::Key::LEFT:
         // Go left
-        if (canDo(Action::MoveLeft, *m_tetromino))
+        if (canDo(Action::MoveLeft, *m_currentTetromino))
         {
             moveTetromino(-1, 0);
         }
         break;
     case threepp::Key::RIGHT:
         // Go Right
-        if (canDo(Action::MoveRight, *m_tetromino))
+        if (canDo(Action::MoveRight, *m_currentTetromino))
         {
             moveTetromino(1, 0);
         }
@@ -172,34 +185,29 @@ void GameBoard::onKeyRepeat(threepp::KeyEvent keyEvent)
     }
 }
 
-void GameBoard::createTetromino()
+void GameBoard::createCurrentTetromino()
 {
-    m_tetromino = getTetrominoFromIndex(std::rand() % static_cast<int>(Tetros::Size));
-    m_tetromino->posX += m_width / 2 - m_tetromino->getWidth() / 2;
-    updateTetromino();
+    m_currentTetromino = getTetrominoFromIndex(std::rand() % static_cast<int>(Tetros::Size));
+    m_currentTetromino->posX += Board::WIDTH / 2 - m_currentTetromino->getWidth() / 2;
     int fallingCount = 0;
-    for (int y = 0; y < m_tetromino->getHeight(); y++)
+    for (int y = 0; y < m_currentTetromino->getHeight(); y++)
     {
-        for (int x = 0; x < m_tetromino->getWidth(); x++)
+        for (int x = 0; x < m_currentTetromino->getWidth(); x++)
         {
-            if (int colorIndex = m_tetromino->getElement(x, y))
+            if (int colorIndex = m_currentTetromino->getElement(x, y))
             {
                 std::unique_ptr<threepp::Mesh> &brick = m_falling[fallingCount++];
-                brick = createBox({float(x + m_tetromino->posX), float(y + m_tetromino->posY), 0}, getColorFromIndex(m_tetromino->getColor()));
+                brick = createBox({float(x + m_currentTetromino->posX), float(y + m_currentTetromino->posY), 0}, getColorFromIndex(m_currentTetromino->getColor()));
                 m_scene.add(*brick);
             }
         }
     }
 }
 
-void GameBoard::updateTetromino()
-{
-}
-
 void GameBoard::moveTetromino(int x, int y)
 {
-    m_tetromino->posX += x;
-    m_tetromino->posY += y;
+    m_currentTetromino->posX += x;
+    m_currentTetromino->posY += y;
     for (auto &brick : m_falling)
     {
         brick->position += { static_cast<float>(x), static_cast<float>(y), 0 };
@@ -209,15 +217,15 @@ void GameBoard::moveTetromino(int x, int y)
 void GameBoard::updateRotation()
 {
     int fallingCount = 0;
-    for (int y = 0; y < m_tetromino->getHeight(); y++)
+    for (int y = 0; y < m_currentTetromino->getHeight(); y++)
     {
-        for (int x = 0; x < m_tetromino->getWidth(); x++)
+        for (int x = 0; x < m_currentTetromino->getWidth(); x++)
         {
-            if (m_tetromino->getElement(x, y))
+            if (m_currentTetromino->getElement(x, y))
             {
                 auto &brick = *m_falling[fallingCount++];
-                brick.position.x = x + m_tetromino->posX;
-                brick.position.y = y + m_tetromino->posY;
+                brick.position.x = x + m_currentTetromino->posX;
+                brick.position.y = y + m_currentTetromino->posY;
             }
         }
     }
@@ -273,3 +281,4 @@ threepp::Color GameBoard::getColorFromIndex(Tetromino::Color index)
         break;
     }
 }
+*/

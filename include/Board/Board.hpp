@@ -11,22 +11,23 @@ public:
     enum class Action { MoveDown, MoveLeft, MoveRight,
                         RotateLeft, RotateRight };
     static constexpr int BOARD_SIZE = 200;
+    static constexpr int WIDTH = 10;
+    static constexpr int HEIGHT = 20;
 
-protected:
     Board();
 
-    virtual void clearLine(int lineNumber) = 0;
+    void clearLine(int lineNumber);
 
-    const virtual std::array<int, BOARD_SIZE> &getBoard() const;
+    const std::array<int, BOARD_SIZE> &getBoard() const;
 
-    virtual void update(float dt) = 0;
+    void resetBoard();
 
     bool canDo(Action action, const Tetromino &t) const;
 
-    void groundTetromino(const Tetromino &t);
+    // Returns bit flags of lines that are cleared
+    int groundTetromino(const Tetromino &t);
 
-
-    int m_width = 10, m_height = 20;
+private:
     std::array<int, BOARD_SIZE> m_board;
 };
 

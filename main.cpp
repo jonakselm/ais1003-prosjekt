@@ -1,7 +1,10 @@
 
 #include "Board/GameBoard.hpp"
+#include "BoardController.hpp"
+#include "BoardView.hpp"
 #include "Utility.hpp"
 #include "threepp/threepp.hpp"
+#include <iostream>
 
 using namespace threepp;
 
@@ -12,29 +15,31 @@ int main()
     renderer.setClearColor(Color::black);
 
     // Funke kun med partall
+    // Creating camera 20x20
     int size = 20;
     auto camera = OrthographicCamera::create(-size / 2, size / 2, -size / 2, size / 2);
     camera->position.z = 1;
     camera->position.x = float(size) / 2 - 0.5f;
     camera->position.y = float(size) / 2 - 0.5f;
-    // Fiks dette
 
     auto scene = Scene::create();
-    GameBoard board(*scene);
-    canvas.addKeyListener(&board);
+    //GameBoard board(*scene);
 
-    float time = 0;
+    renderer.enableTextRendering();
 
     Clock clock;
-    float rotationSpeed = 1;
 
-    Vector2 dir = { 0, 0 };
+    BoardController bc(renderer, *scene);
+    canvas.addKeyListener(&bc);
 
+    int c;
+
+    clock.start();
     canvas.animate([&]()
     {
-        board.update(clock.getDelta());
-        //group->rotation.y += rotationSpeed * dt;
-
+        bc.update(clock.getDelta());
         renderer.render(*scene, *camera);
+        c++;
     });
+    std::cout << (float)c / clock.getElapsedTime() << std::endl;
 }
