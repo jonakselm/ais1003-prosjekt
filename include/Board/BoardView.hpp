@@ -37,7 +37,7 @@ private:
     threepp::GLRenderer &m_renderer;
     threepp::Scene &m_scene;
 
-    std::array<TetroBlock, Board::BOARD_SIZE> m_background;
+    std::array<TetroBlock, Board::HEIGHT> m_border;
     std::array<TetroBlock, Board::BOARD_SIZE> m_board;
     VisualTetromino m_currentTetromino;
     VisualTetromino m_nextTetromino;

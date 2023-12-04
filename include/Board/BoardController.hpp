@@ -6,6 +6,7 @@
 #include "BoardView.hpp"
 #include "GameBoard.hpp"
 #include <random>
+#include <iostream>
 
 class BoardController : public threepp::KeyListener
 {
@@ -20,14 +21,13 @@ public:
 
 private:
     void moveTetromino(int x, int y);
-
     void groundTetromino();
-
-    void resetTetromino(Tetromino &tetromino);
-
+    void resetTetrominoPos(Tetromino &tetromino);
     void clampXToBoard();
-
     std::unique_ptr<Tetromino> randomTetromino();
+
+    void swapHold();
+    void restart();
 
 
     BoardView m_view;
@@ -38,13 +38,18 @@ private:
 
     float m_timeThreshold = 0.5f;
     float m_elapsedTime = 0;
+    unsigned int m_score = 0;
     int m_lines = 0;
     int m_level = 0;
-    std::array<float, 5> m_times = { 0.5f, 0.4f, 0.3f, 0.25f, 0.2f };
+    std::array<float, 7> m_times = { 0.5f, 0.4f, 0.3f, 0.25f,
+                                    0.2f, 0.15f, 0.1f };
+    bool m_canSwap = true;
 
     std::random_device m_rd;
     std::mt19937 m_rng;
     std::uniform_int_distribution<int> m_tetroDist;
+
+    int m_i = 0, m_o = 0, m_t = 0, m_j = 0, m_l = 0, m_s = 0, m_z = 0;
 };
 
 #endif//TETRIS_BOARDCONTROLLER_HPP

@@ -1,33 +1,33 @@
 #include "BoardView.hpp"
 #include "Utility.hpp"
 
-BoardView::BoardView(threepp::GLRenderer& renderer, threepp::Scene& scene)
+BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene)
     : m_renderer(renderer),
       m_scene(scene),
       m_score(m_renderer.textHandle("Score: 0")),
       m_lines(m_renderer.textHandle("Lines: 0")),
-      m_level(m_renderer.textHandle("Level: 0")),
+      m_level(m_renderer.textHandle("Level: 1")),
       m_next(m_renderer.textHandle("Next:")),
       m_hold(m_renderer.textHandle("Hold:"))
 {
-    for (int i = 0; i < m_background.size(); i++)
+    for (int i = 0; i < m_border.size(); i++)
     {
-        m_background[i] = createBox({ float(i % Board::WIDTH), float(i / Board::WIDTH), 0 }, threepp::Color::gray);
-        m_scene.add(*m_background[i]);
+        m_border[i] = createBox({ static_cast<float>(Board::WIDTH), static_cast<float>(i) }, threepp::Color::gray);
+        m_scene.add(*m_border[i]);
     }
     m_score.scale = 2;
-    m_score.setPosition(325, 10);
+    m_score.setPosition(360, 10);
     m_lines.scale = 2;
-    m_lines.setPosition(325, 50);
+    m_lines.setPosition(360, 50);
     m_level.scale = 2;
-    m_level.setPosition(325, 90);
+    m_level.setPosition(360, 90);
     m_next.scale = 2;
-    m_next.setPosition(325, 150);
+    m_next.setPosition(360, 150);
     m_hold.scale = 2;
     m_hold.setPosition(500, 150);
 }
 
-void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> & boardData)
+void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData)
 {
     // Remove old
     for (auto &block : m_board)
@@ -43,7 +43,7 @@ void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> & boardData
     {
         if (boardData[i])
         {
-            m_board[i] = createBox({  float(i % Board::WIDTH), float(i / Board::WIDTH), 0 }, intToColor(boardData[i]));
+            m_board[i] = createBox({  float(i % Board::WIDTH), float(i / Board::WIDTH) }, intToColor(boardData[i]));
             m_scene.add(*m_board[i]);
         }
     }
@@ -81,16 +81,6 @@ void BoardView::updateTetromino(const Tetromino &tetroData, Piece piece)
         break;
     }
 
-    bool willCreate = false;
-    for (const auto &block : *tetroPtr)
-    {
-        if (!block)
-        {
-            willCreate = true;
-        }
-    }
-
-
     int tetroBlock = 0;
     for (int y = 0; y < tetroData.getHeight(); y++)
     {
@@ -124,7 +114,8 @@ void BoardView::setLines(unsigned int lines)
 
 void BoardView::setLevel(unsigned int level)
 {
-    m_level.setText("Level: " + std::to_string(level));
+    // Add 1 because it is also used for indexing an array
+    m_level.setText("Level: " + std::to_string(level + 1));
 }
 
 threepp::Color BoardView::intToColor(int color)
@@ -156,7 +147,7 @@ threepp::Color BoardView::intToColor(int color)
     }
 }
 
-void BoardView::updateBlock(TetroBlock& block, int x, int y, threepp::Color color)
+void BoardView::updateBlock(TetroBlock &block, int x, int y, threepp::Color color)
 {
     block->position = { static_cast<float>(x), static_cast<float>(y), 0 };
     auto material = threepp::MeshBasicMaterial::create();
@@ -164,8 +155,8 @@ void BoardView::updateBlock(TetroBlock& block, int x, int y, threepp::Color colo
     block->setMaterial(material);
 }
 
-void BoardView::createBlock(TetroBlock& block, int x, int y, threepp::Color color)
+void BoardView::createBlock(TetroBlock &block, int x, int y, threepp::Color color)
 {
-    block = createBox({static_cast<float>(x), static_cast<float>(y), 0}, color);
+    block = createBox({static_cast<float>(x), static_cast<float>(y)}, color);
     m_scene.add(*block);
 }

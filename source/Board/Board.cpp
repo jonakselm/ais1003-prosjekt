@@ -39,7 +39,7 @@ void Board::resetBoard()
     std::fill(m_board.begin(), m_board.end(), 0);
 }
 
-int Board::groundTetromino(const Tetromino & t)
+int Board::groundTetromino(const Tetromino &t)
 {
     for (int y = 0; y < t.getHeight(); y++)
     {

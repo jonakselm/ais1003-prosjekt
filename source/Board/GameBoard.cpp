@@ -5,10 +5,10 @@
     :
     m_scene(scene)
 {
-    for (int i = 0; i < m_background.size(); i++)
+    for (int i = 0; i < m_border.size(); i++)
     {
-        m_background[i] = createBox({ float(i % WIDTH), float(i / WIDTH), 0 }, threepp::Color::gray);
-        m_scene.add(*m_background[i]);
+        m_border[i] = createBox({ float(i % WIDTH), float(i / WIDTH), 0 }, threepp::Color::gray);
+        m_scene.add(*m_border[i]);
     }
     createTetromino();
 }

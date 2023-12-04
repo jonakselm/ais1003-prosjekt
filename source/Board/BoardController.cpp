@@ -1,15 +1,15 @@
 #include "BoardController.hpp"
 
 
-BoardController::BoardController(threepp::GLRenderer &renderer, threepp::Scene& scene)
+BoardController::BoardController(threepp::GLRenderer &renderer, threepp::Scene &scene)
     : m_view(renderer, scene),
       m_rng(m_rd()),
-      m_tetroDist(0, 7)
+      m_tetroDist(0, 6)
 {
     m_tetromino = randomTetromino();
     m_nextTetromino = randomTetromino();
     m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
-    m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next);
+    m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next) ;
 }
 
 void BoardController::update(float dt)
@@ -26,7 +26,14 @@ void BoardController::update(float dt)
         }
         else
         {
-            groundTetromino();
+            if (m_tetromino->posY <= 0)
+            {
+                restart();
+            }
+            else
+            {
+                groundTetromino();
+            }
         }
     }
 }
@@ -81,18 +88,13 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
         clampXToBoard();
         break;
     case threepp::Key::R:
-        m_board.resetBoard();
-        m_tetromino = randomTetromino();
-        m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
-        m_view.updateBoard(m_board.getBoard());
+        restart();
         break;
     case threepp::Key::H:
-        resetTetromino(*m_tetromino);
-        m_tetromino.swap(m_holdTetromino);
-        if (!m_tetromino)
-            m_tetromino = randomTetromino();
-        m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
-        m_view.updateTetromino(*m_holdTetromino, BoardView::Piece::Hold);
+        if (m_canSwap)
+        {
+            swapHold();
+        }
         break;
     }
 }
@@ -140,6 +142,8 @@ void BoardController::groundTetromino()
 {
     const auto &board = m_board.getBoard();
     int flags = m_board.groundTetromino(*m_tetromino);
+    m_score += 25;
+    int prevLines = m_lines;
     if (flags)
     {
         for (int i = 0; i < Board::HEIGHT; i++)
@@ -150,20 +154,27 @@ void BoardController::groundTetromino()
                 m_lines++;
             }
         }
-        m_view.updateBoard(board);
+        // Increase by 100 * powers of 2 depending on the amount of lines cleared
+        m_score += (1 << (m_lines - prevLines)) * 100;
         m_level = std::min(m_lines / 10, static_cast<int>(m_times.size() - 1));
         m_timeThreshold = m_times.at(m_level);
+
+        m_view.updateBoard(m_board.getBoard());
         m_view.setLevel(m_level);
         m_view.setLines(m_lines);
     }
     m_tetromino = std::move(m_nextTetromino);
     m_nextTetromino = randomTetromino();
+
+    m_view.setScore(m_score);
     m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
     m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next);
     m_view.updateBoard(board);
+
+    m_canSwap = true;
 }
 
-void BoardController::resetTetromino(Tetromino &tetromino)
+void BoardController::resetTetrominoPos(Tetromino &tetromino)
 {
     tetromino.posX = (Board::WIDTH - tetromino.getWidth()) / 2;
     tetromino.posY = -1;
@@ -207,27 +218,66 @@ std::unique_ptr<Tetromino> BoardController::randomTetromino()
     default:
     case 0:
         t = std::make_unique<TetroI>();
+        m_i++;
         break;
     case 1:
         t = std::make_unique<TetroO>();
+        m_o++;
         break;
     case 2:
         t = std::make_unique<TetroT>();
+        m_t++;
         break;
     case 3:
         t = std::make_unique<TetroJ>();
+        m_j++;
         break;
     case 4:
         t = std::make_unique<TetroL>();
+        m_l++;
         break;
     case 5:
         t = std::make_unique<TetroS>();
+        m_s++;
         break;
     case 6:
         t = std::make_unique<TetroZ>();
+        m_z++;
         break;
     }
-    resetTetromino(*t);
+    resetTetrominoPos(*t);
 
     return t;
+}
+
+void BoardController::swapHold()
+{
+    resetTetrominoPos(*m_tetromino);
+    m_tetromino.swap(m_holdTetromino);
+    if (!m_tetromino)
+    {
+        m_tetromino.swap(m_nextTetromino);
+        m_nextTetromino = randomTetromino();
+        m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next);
+    }
+    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
+    m_view.updateTetromino(*m_holdTetromino, BoardView::Piece::Hold);
+
+    m_canSwap = false;
+}
+
+void BoardController::restart()
+{
+    m_tetromino = randomTetromino();
+    m_nextTetromino = randomTetromino();
+    m_holdTetromino.reset();
+    m_board.resetBoard();
+    m_score = 0;
+    m_lines = 0;
+    m_level = 0;
+    m_view.setScore(m_score);
+    m_view.setLines(m_lines);
+    m_view.setLevel(m_level);
+    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
+    m_view.updateBoard(m_board.getBoard());
 }
