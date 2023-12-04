@@ -68,7 +68,7 @@ bool Board::canDo(Action action, const Tetromino &t) const
 {
     const int width = t.getWidth();
     // Set up for checking a rotated tetro
-    unsigned int rotation = t.getRotation();
+    unsigned int rotation = t.rotation;
     switch (action)
     {
     case Action::RotateLeft:

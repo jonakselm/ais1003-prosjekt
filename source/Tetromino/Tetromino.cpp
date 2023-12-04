@@ -1,15 +1,5 @@
 #include "Tetromino.hpp"
 
-void Tetromino::incrementRotation()
-{
-    m_rotation++;
-}
-
-void Tetromino::decrementRotation()
-{
-    m_rotation--;
-}
-
 int Tetromino::getWidth() const
 {
     return m_width;
@@ -18,11 +8,6 @@ int Tetromino::getWidth() const
 int Tetromino::getHeight() const
 {
     return m_height;
-}
-
-unsigned int Tetromino::getRotation() const
-{
-    return m_rotation;
 }
 
 int Tetromino::getElement(int x, int y, unsigned int rotation) const
@@ -47,7 +32,7 @@ int Tetromino::getElement(int x, int y, unsigned int rotation) const
 
 int Tetromino::getElement(int x, int y) const
 {
-    return getElement(x, y, m_rotation);
+    return getElement(x, y, rotation);
 }
 
 Tetromino::Tetromino(int width, int height)

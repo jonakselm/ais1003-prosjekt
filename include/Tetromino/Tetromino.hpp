@@ -32,16 +32,10 @@ class Tetromino
 public:
     enum Color { None, Cyan, Yellow, Purple, Blue, Orange, Green, Red };
 
-    // Takes a number from 0-3
-    void incrementRotation();
-
-    void decrementRotation();
 
     int getWidth() const;
 
     int getHeight() const;
-
-    unsigned int getRotation() const;
 
     int getElement(int x, int y, unsigned int rotation) const;
 
@@ -49,13 +43,13 @@ public:
 
 
     int posX = 0, posY = 0;
+    unsigned int rotation = 0;
 
 protected:
     Tetromino(int width, int height);
 
     std::vector<int> m_cells;
     const int m_width = 3, m_height = 3;
-    unsigned int m_rotation = 0;
 };
 
 #endif//THREEPP_TETRIS_TETROMINO_HPP

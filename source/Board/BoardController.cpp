@@ -73,7 +73,7 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
         // Rotate Left
         if (m_board.canDo(Board::Action::RotateLeft, *m_tetromino))
         {
-            m_tetromino->decrementRotation();
+            m_tetromino->rotation--;
             m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
         }
         clampXToBoard();
@@ -82,7 +82,7 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
         // Rotate right
         if (m_board.canDo(Board::Action::RotateRight, *m_tetromino))
         {
-            m_tetromino->incrementRotation();
+            m_tetromino->rotation++;
             m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
         }
         clampXToBoard();
@@ -253,6 +253,7 @@ std::unique_ptr<Tetromino> BoardController::randomTetromino()
 void BoardController::swapHold()
 {
     resetTetrominoPos(*m_tetromino);
+    m_tetromino->rotation = 0;
     m_tetromino.swap(m_holdTetromino);
     if (!m_tetromino)
     {

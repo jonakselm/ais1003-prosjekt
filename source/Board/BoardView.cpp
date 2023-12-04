@@ -65,7 +65,7 @@ void BoardView::updateTetromino(const Tetromino &tetroData, Piece piece)
         tetroPtr = &m_currentTetromino;
         offsetX = tetroData.posX;
         offsetY = tetroData.posY;
-        rotation = tetroData.getRotation();
+        rotation = tetroData.rotation;
         break;
     case Piece::Next:
         tetroPtr = &m_nextTetromino;
