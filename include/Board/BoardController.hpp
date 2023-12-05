@@ -11,7 +11,9 @@
 class BoardController : public threepp::KeyListener
 {
 public:
-    BoardController(threepp::GLRenderer &renderer, threepp::Scene &scene);
+    BoardController(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size);
+
+    void onWindowResize(const threepp::WindowSize &size);
 
     void update(float dt);
 

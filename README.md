@@ -1,12 +1,25 @@
-# threepp vcpkg test
+# MVC Tetris
 
-This is a standalone demo project that uses `threepp` as a dependency.
+This is an attempt at making tetris using the MVC coding pattern,
+using threepp for rendering using the OpenGL rendering API.
 
-In order to update `threepp`, replace the baseline value in [vcpkg-configuration.json](vcpkg-configuration.json).
-The baseline should point to a [commit](https://github.com/Ecos-platform/vcpkg-registry/commits/main) 
-from the [custom vcpkg registry](https://github.com/Ecos-platform/vcpkg-registry) that hosts the port.
+It has most of the functionality of the modern version of tetris,
+and has a hold function, a preview of the next piece and a display
+of the score.
 
-In the future, it could be added to the main vcpkg registry.
+The controls are the same as most modern implementations of tetris.
+
+```
+SPACE->instant drop
+DOWN->soft drop
+LEFT->move left
+RIGHT->move right
+Z->rotate counter clockwise
+UP->rotate clockwise
+C->hold
+```
+
+---
 
 As `vcpkg` is used, you need to tell CMake about it in order for dependency resolution to work: 
 

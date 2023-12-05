@@ -15,7 +15,9 @@ class BoardView
 public:
     enum class Piece { Current, Next, Hold };
 
-    BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene);
+    BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size);
+
+    void onWindowResize(const threepp::WindowSize &size);
 
     // TODO: Make code more efficient
     void updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData);

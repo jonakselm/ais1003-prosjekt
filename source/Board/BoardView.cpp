@@ -1,7 +1,7 @@
 #include "BoardView.hpp"
 #include "Utility.hpp"
 
-BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene)
+BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size)
     : m_renderer(renderer),
       m_scene(scene),
       m_score(m_renderer.textHandle("Score: 0")),
@@ -15,16 +15,21 @@ BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene)
         m_border[i] = createBox({ static_cast<float>(Board::WIDTH), static_cast<float>(i) }, threepp::Color::gray);
         m_scene.add(*m_border[i]);
     }
-    m_score.scale = 2;
-    m_score.setPosition(360, 10);
-    m_lines.scale = 2;
-    m_lines.setPosition(360, 50);
-    m_level.scale = 2;
-    m_level.setPosition(360, 90);
-    m_next.scale = 2;
-    m_next.setPosition(360, 150);
-    m_hold.scale = 2;
-    m_hold.setPosition(500, 150);
+    onWindowResize(size);
+}
+
+void BoardView::onWindowResize(const threepp::WindowSize &size)
+{
+    m_score.scale = size.height / 200;
+    m_score.setPosition(size.width * 0.56, size.height * 0.02);
+    m_lines.scale = size.height / 200;
+    m_lines.setPosition(size.width * 0.56, size.height * 0.1);
+    m_level.scale = size.height / 200;
+    m_level.setPosition(size.width * 0.56, size.height * 0.18);
+    m_next.scale = size.height / 200;
+    m_next.setPosition(size.width * 0.56, size.height * 0.34);
+    m_hold.scale = size.height / 200;
+    m_hold.setPosition(size.width * 0.82, size.height * 0.34);
 }
 
 void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData)
