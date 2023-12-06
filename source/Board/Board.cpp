@@ -47,7 +47,11 @@ int Board::groundTetromino(const Tetromino &t)
         {
             if (int color = t.getElement(x, y))
             {
-                m_board[x + t.posX + (y + t.posY) * WIDTH] = color;
+                int i = x + t.posX + (y + t.posY) * WIDTH;
+                if (i > 0)
+                {
+                    m_board[i] = color;
+                }
             }
         }
     }
@@ -109,7 +113,7 @@ bool Board::canDo(Action action, const Tetromino &t) const
 
                 // Conditionals
                 unsigned int index = nextX + nextY * WIDTH;
-                if (index > m_board.size())
+                if (index >= m_board.size())
                 {
                     return false;
                 }

@@ -17,6 +17,7 @@ RIGHT->move right
 Z->rotate counter clockwise
 UP->rotate clockwise
 C->hold
+R->restart
 ```
 
 ---
