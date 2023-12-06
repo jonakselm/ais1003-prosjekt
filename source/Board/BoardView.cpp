@@ -15,6 +15,7 @@ BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const
         m_border[i] = createBox({ static_cast<float>(Board::WIDTH), static_cast<float>(i) }, threepp::Color::gray);
         m_scene.add(*m_border[i]);
     }
+    // Set text position
     onWindowResize(size);
 }
 

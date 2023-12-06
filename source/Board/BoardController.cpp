@@ -110,7 +110,7 @@ void BoardController::onKeyReleased(threepp::KeyEvent keyEvent)
     {
         // Set time threshold back to normal
     case threepp::Key::DOWN:
-        m_timeThreshold = 0.25;
+        m_timeThreshold = m_times[m_level];
         break;
     }
 }
@@ -274,6 +274,7 @@ void BoardController::swapHold()
 
 void BoardController::restart()
 {
+    m_timeThreshold = m_times[m_level];
     m_tetromino = randomTetromino();
     m_nextTetromino = randomTetromino();
     m_holdTetromino.reset();
