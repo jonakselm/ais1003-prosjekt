@@ -50,72 +50,71 @@ void BoardController::update(float dt)
 void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
 {
     // TODO: Make cleaner
-    switch (keyEvent.key)
+    if (!m_pause)
     {
-    case threepp::Key::SPACE:
-        // Instant place down
-        while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
+        switch (keyEvent.key)
         {
-            moveTetromino(0, 1);
+        case threepp::Key::SPACE:
+            // Instant place down
+            while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
+            {
+                moveTetromino(0, 1);
+            }
+            groundTetromino();
+            break;
+        case threepp::Key::DOWN:
+            // Move faster
+            m_timeThreshold = 0.05;
+            break;
+        case threepp::Key::LEFT:
+            // Go left
+            if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
+            {
+                moveTetromino(-1, 0);
+            }
+            break;
+        case threepp::Key::RIGHT:
+            // Go Right
+            if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
+            {
+                moveTetromino(1, 0);
+            }
+            break;
+        case threepp::Key::Z:
+            // Rotate Left
+            if (m_board.canDo(Board::Action::RotateLeft, *m_tetromino))
+            {
+                m_tetromino->rotation--;
+                m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+            }
+            clampXToBoard();
+            break;
+        case threepp::Key::UP:
+            // Rotate right
+            if (m_board.canDo(Board::Action::RotateRight, *m_tetromino))
+            {
+                m_tetromino->rotation++;
+                m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+            }
+            clampXToBoard();
+            break;
+        case threepp::Key::R:
+            restart();
+            break;
+        case threepp::Key::C:
+            if (m_swappable)
+            {
+                swapHold();
+            }
+            break;
+        case threepp::Key::P:
+            if (m_pauseToggleable && !m_pause)
+            {
+                m_pause = true;
+                m_pauseToggleable = false;
+            }
+            break;
         }
-        groundTetromino();
-        break;
-    case threepp::Key::DOWN:
-        // Move faster
-        m_timeThreshold = 0.05;
-        break;
-    case threepp::Key::LEFT:
-        // Go left
-        if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
-        {
-            moveTetromino(-1, 0);
-        }
-        break;
-    case threepp::Key::RIGHT:
-        // Go Right
-        if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
-        {
-            moveTetromino(1, 0);
-        }
-        break;
-    case threepp::Key::Z:
-        // Rotate Left
-        if (m_board.canDo(Board::Action::RotateLeft, *m_tetromino))
-        {
-            m_tetromino->rotation--;
-            m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
-        }
-        clampXToBoard();
-        break;
-    case threepp::Key::UP:
-        // Rotate right
-        if (m_board.canDo(Board::Action::RotateRight, *m_tetromino))
-        {
-            m_tetromino->rotation++;
-            m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
-        }
-        clampXToBoard();
-        break;
-    case threepp::Key::R:
-        restart();
-        break;
-    case threepp::Key::C:
-        if (m_swappable)
-        {
-            swapHold();
-        }
-        break;
-    case threepp::Key::P:
-        if (m_pauseToggleable && !m_pause)
-        {
-            m_pause = true;
-            m_pauseToggleable = false;
-        }
-        else
-        {
-            m_pauseToggleable = true;
-        }
-        break;
     }
 }
 
