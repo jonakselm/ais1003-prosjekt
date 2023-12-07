@@ -23,7 +23,7 @@ public:
 private:
     void moveTetromino(int x, int y);
     void groundTetromino();
-    void resetTetrominoPos(Tetromino &tetromino);
+    void resetTetrominoPos(Tetromino &tetromino) const;
     void clampXToBoard();
     std::unique_ptr<Tetromino> randomTetromino();
 

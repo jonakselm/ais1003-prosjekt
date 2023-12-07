@@ -180,7 +180,7 @@ void BoardController::groundTetromino()
     m_canSwap = true;
 }
 
-void BoardController::resetTetrominoPos(Tetromino &tetromino)
+void BoardController::resetTetrominoPos(Tetromino &tetromino) const
 {
     tetromino.posX = (Board::WIDTH - tetromino.getWidth()) / 2;
     tetromino.posY = -1;
@@ -215,40 +215,33 @@ void BoardController::clampXToBoard()
 
 std::unique_ptr<Tetromino> BoardController::randomTetromino()
 {
+    // This prevents the function from being const
     int i = m_tetroDist(m_rng);
 
     std::unique_ptr<Tetromino> t;
 
     switch (i)
     {
-    default:
     case 0:
         t = std::make_unique<TetroI>();
-        m_i++;
         break;
     case 1:
         t = std::make_unique<TetroO>();
-        m_o++;
         break;
     case 2:
         t = std::make_unique<TetroT>();
-        m_t++;
         break;
     case 3:
         t = std::make_unique<TetroJ>();
-        m_j++;
         break;
     case 4:
         t = std::make_unique<TetroL>();
-        m_l++;
         break;
     case 5:
         t = std::make_unique<TetroS>();
-        m_s++;
         break;
     case 6:
         t = std::make_unique<TetroZ>();
-        m_z++;
         break;
     }
     resetTetrominoPos(*t);

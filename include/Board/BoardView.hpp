@@ -29,6 +29,7 @@ public:
     void setLevel(unsigned int level);
 
 private:
+    // Non const because static
     static threepp::Color intToColor(int color);
 
     void updateBlock(TetroBlock &block, int x, int y, threepp::Color color);
