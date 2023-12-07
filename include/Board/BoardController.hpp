@@ -4,7 +4,6 @@
 #define TETRIS_BOARDCONTROLLER_HPP
 
 #include "BoardView.hpp"
-#include "GameBoard.hpp"
 #include <random>
 #include <iostream>
 

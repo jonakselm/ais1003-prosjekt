@@ -22,7 +22,7 @@ public:
     // TODO: Make code more efficient
     void updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData);
 
-    void updateTetromino(const Tetromino &tetroData, Piece piece);
+    void updateTetromino(const Tetromino *const tetroData, Piece piece);
 
     void setScore(unsigned int score);
     void setLines(unsigned int lines);

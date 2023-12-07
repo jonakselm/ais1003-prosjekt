@@ -1,7 +1,4 @@
-#include "Board/GameBoard.hpp"
 #include "BoardController.hpp"
-#include "BoardView.hpp"
-#include "Utility.hpp"
 #include "threepp/threepp.hpp"
 #include <iostream>
 

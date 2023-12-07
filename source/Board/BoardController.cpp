@@ -1,4 +1,5 @@
 #include "BoardController.hpp"
+#include "TetrominoPieces.hpp"
 
 
 BoardController::BoardController(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size)
@@ -8,8 +9,8 @@ BoardController::BoardController(threepp::GLRenderer &renderer, threepp::Scene &
 {
     m_tetromino = randomTetromino();
     m_nextTetromino = randomTetromino();
-    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
-    m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next) ;
+    m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+    m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next) ;
 }
 
 void BoardController::onWindowResize(const threepp::WindowSize& size)
@@ -79,7 +80,7 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
         if (m_board.canDo(Board::Action::RotateLeft, *m_tetromino))
         {
             m_tetromino->rotation--;
-            m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
+            m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
         }
         clampXToBoard();
         break;
@@ -88,7 +89,7 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
         if (m_board.canDo(Board::Action::RotateRight, *m_tetromino))
         {
             m_tetromino->rotation++;
-            m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
+            m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
         }
         clampXToBoard();
         break;
@@ -140,7 +141,7 @@ void BoardController::moveTetromino(int x, int y)
 {
     m_tetromino->posX += x;
     m_tetromino->posY += y;
-    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
+    m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
 }
 
 void BoardController::groundTetromino()
@@ -172,8 +173,8 @@ void BoardController::groundTetromino()
     m_nextTetromino = randomTetromino();
 
     m_view.setScore(m_score);
-    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
-    m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next);
+    m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+    m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next);
     m_view.updateBoard(board);
 
     m_canSwap = true;
@@ -264,10 +265,10 @@ void BoardController::swapHold()
     {
         m_tetromino.swap(m_nextTetromino);
         m_nextTetromino = randomTetromino();
-        m_view.updateTetromino(*m_nextTetromino, BoardView::Piece::Next);
+        m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next);
     }
-    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
-    m_view.updateTetromino(*m_holdTetromino, BoardView::Piece::Hold);
+    m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+    m_view.updateTetromino(m_holdTetromino.get(), BoardView::Piece::Hold);
 
     m_canSwap = false;
 }
@@ -285,6 +286,8 @@ void BoardController::restart()
     m_view.setScore(m_score);
     m_view.setLines(m_lines);
     m_view.setLevel(m_level);
-    m_view.updateTetromino(*m_tetromino, BoardView::Piece::Current);
+    m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+    m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next);
+    m_view.updateTetromino(m_holdTetromino.get(), BoardView::Piece::Hold);
     m_view.updateBoard(m_board.getBoard());
 }

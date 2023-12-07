@@ -56,7 +56,7 @@ void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData)
 }
 
 // TODO: Make function a lot dumber
-void BoardView::updateTetromino(const Tetromino &tetroData, Piece piece)
+void BoardView::updateTetromino(const Tetromino *const tetroData, Piece piece)
 {
     VisualTetromino *tetroPtr = nullptr;
 
@@ -69,9 +69,9 @@ void BoardView::updateTetromino(const Tetromino &tetroData, Piece piece)
     default:
     case Piece::Current:
         tetroPtr = &m_currentTetromino;
-        offsetX = tetroData.posX;
-        offsetY = tetroData.posY;
-        rotation = tetroData.rotation;
+        offsetX = tetroData->posX;
+        offsetY = tetroData->posY;
+        rotation = tetroData->rotation;
         break;
     case Piece::Next:
         tetroPtr = &m_nextTetromino;
@@ -87,23 +87,34 @@ void BoardView::updateTetromino(const Tetromino &tetroData, Piece piece)
         break;
     }
 
-    int tetroBlock = 0;
-    for (int y = 0; y < tetroData.getHeight(); y++)
+    if (tetroData)
     {
-        for (int x = 0; x < tetroData.getWidth(); x++)
+        int tetroBlock = 0;
+        for (int y = 0; y < tetroData->getHeight(); y++)
         {
-            if (int colorData = tetroData.getElement(x, y, rotation))
+            for (int x = 0; x < tetroData->getWidth(); x++)
             {
-                auto &block = (*tetroPtr)[tetroBlock++];
-                if (block)
+                if (int colorData = tetroData->getElement(x, y, rotation))
                 {
-                    updateBlock(block, x + offsetX, y + offsetY, intToColor(colorData));
-                }
-                else
-                {
-                    createBlock(block, x + offsetX, y + offsetY, intToColor(colorData));
+                    auto &block = (*tetroPtr)[tetroBlock++];
+                    if (block)
+                    {
+                        updateBlock(block, x + offsetX, y + offsetY, intToColor(colorData));
+                    }
+                    else
+                    {
+                        createBlock(block, x + offsetX, y + offsetY, intToColor(colorData));
+                    }
                 }
             }
+        }
+    }
+    else
+    {
+        for (auto &block : *tetroPtr)
+        {
+            m_scene.remove(*block);
+            block.reset();
         }
     }
 }
