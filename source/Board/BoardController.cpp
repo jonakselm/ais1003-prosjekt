@@ -49,7 +49,6 @@ void BoardController::update(float dt)
 
 void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
 {
-    // TODO: Make cleaner
     if (!m_pause)
     {
         switch (keyEvent.key)

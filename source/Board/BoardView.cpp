@@ -55,7 +55,6 @@ void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData)
     }
 }
 
-// TODO: Make function a lot dumber
 void BoardView::updateTetromino(const Tetromino *const tetroData, Piece piece)
 {
     VisualTetromino *tetroPtr = nullptr;

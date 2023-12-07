@@ -1,5 +1,5 @@
-add_executable(Tests tests.cpp)
-add_test(NAME Tests COMMAND Tests)
+add_executable(tests tests.cpp)
+add_test(NAME tests COMMAND tests)
 
-target_link_libraries(Tests PRIVATE Catch2::Catch2WithMain
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain
                             PUBLIC libBoard)
