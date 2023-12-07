@@ -20,25 +20,28 @@ void BoardController::onWindowResize(const threepp::WindowSize& size)
 
 void BoardController::update(float dt)
 {
-    m_elapsedTime += dt;
-    // Check if falling piece is out of bounds and reposition it accordingly
-    // Moving down and grounding blocks
-    if (m_elapsedTime > m_timeThreshold)
+    if (!m_pause)
     {
-        m_elapsedTime -= m_timeThreshold;
-        if (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
+        m_elapsedTime += dt;
+        // Check if falling piece is out of bounds and reposition it accordingly
+        // Moving down and grounding blocks
+        if (m_elapsedTime > m_timeThreshold)
         {
-            moveTetromino(0, 1);
-        }
-        else
-        {
-            if (m_tetromino->posY <= 0)
+            m_elapsedTime -= m_timeThreshold;
+            if (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
             {
-                restart();
+                moveTetromino(0, 1);
             }
             else
             {
-                groundTetromino();
+                if (m_tetromino->posY <= 0)
+                {
+                    restart();
+                }
+                else
+                {
+                    groundTetromino();
+                }
             }
         }
     }
@@ -97,9 +100,20 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
         restart();
         break;
     case threepp::Key::C:
-        if (m_canSwap)
+        if (m_swappable)
         {
             swapHold();
+        }
+        break;
+    case threepp::Key::P:
+        if (m_pauseToggleable && !m_pause)
+        {
+            m_pause = true;
+            m_pauseToggleable = false;
+        }
+        else
+        {
+            m_pauseToggleable = true;
         }
         break;
     }
@@ -112,6 +126,16 @@ void BoardController::onKeyReleased(threepp::KeyEvent keyEvent)
         // Set time threshold back to normal
     case threepp::Key::DOWN:
         m_timeThreshold = m_times[m_level];
+        break;
+    case threepp::Key::P:
+        if (m_pauseToggleable && m_pause)
+        {
+            m_pause = false;
+        }
+        else
+        {
+            m_pauseToggleable = true;
+        }
         break;
     }
 }
@@ -177,7 +201,7 @@ void BoardController::groundTetromino()
     m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next);
     m_view.updateBoard(board);
 
-    m_canSwap = true;
+    m_swappable = true;
 }
 
 void BoardController::resetTetrominoPos(Tetromino &tetromino) const
@@ -263,7 +287,7 @@ void BoardController::swapHold()
     m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
     m_view.updateTetromino(m_holdTetromino.get(), BoardView::Piece::Hold);
 
-    m_canSwap = false;
+    m_swappable = false;
 }
 
 void BoardController::restart()

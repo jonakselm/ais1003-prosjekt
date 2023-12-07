@@ -44,7 +44,9 @@ private:
     int m_level = 0;
     std::array<float, 7> m_times = { 0.5f, 0.4f, 0.3f, 0.25f,
                                     0.2f, 0.15f, 0.1f };
-    bool m_canSwap = true;
+    bool m_swappable = true;
+    bool m_pauseToggleable = true;
+    bool m_pause = false;
 
     std::random_device m_rd;
     std::mt19937 m_rng;
