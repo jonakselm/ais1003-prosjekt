@@ -141,22 +141,25 @@ void BoardController::onKeyReleased(threepp::KeyEvent keyEvent)
 
 void BoardController::onKeyRepeat(threepp::KeyEvent keyEvent)
 {
-    switch (keyEvent.key)
+    if (!m_pause)
     {
-    case threepp::Key::LEFT:
-        // Go left
-        if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
+        switch (keyEvent.key)
         {
-            moveTetromino(-1, 0);
+        case threepp::Key::LEFT:
+            // Go left
+            if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
+            {
+                moveTetromino(-1, 0);
+            }
+            break;
+        case threepp::Key::RIGHT:
+            // Go Right
+            if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
+            {
+                moveTetromino(1, 0);
+            }
+            break;
         }
-        break;
-    case threepp::Key::RIGHT:
-        // Go Right
-        if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
-        {
-            moveTetromino(1, 0);
-        }
-        break;
     }
 }
 
