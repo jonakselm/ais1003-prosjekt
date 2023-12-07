@@ -58,6 +58,7 @@ void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
             while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
             {
                 moveTetromino(0, 1);
+                m_score += 1;
             }
             groundTetromino();
             break;
