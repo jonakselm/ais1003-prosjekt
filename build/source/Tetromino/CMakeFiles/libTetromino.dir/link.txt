@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblibTetromino.a CMakeFiles/libTetromino.dir/Tetromino.cpp.o
-/usr/bin/ranlib liblibTetromino.a
