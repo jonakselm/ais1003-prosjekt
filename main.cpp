@@ -5,6 +5,7 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(600, 600), "SFML Tetris");
+	window.setFramerateLimit(60);
 
 	BoardController bc;
 	sf::Clock clock;
