@@ -5,22 +5,20 @@
 
 #include "BoardView.hpp"
 #include <random>
+#include <memory>
 #include <iostream>
 
-class BoardController : public threepp::KeyListener
+class BoardController 
 {
 public:
-    BoardController(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size);
-
-    void onWindowResize(const threepp::WindowSize &size);
+    BoardController();
 
     void update(float dt);
 
-    void onKeyPressed(threepp::KeyEvent keyEvent) override;
-    void onKeyReleased(threepp::KeyEvent keyEvent) override;
-    void onKeyRepeat(threepp::KeyEvent keyEvent) override;
+	void draw(sf::RenderTarget &target) const;
 
 private:
+	void handleInput();
     void moveTetromino(int x, int y);
     void groundTetromino();
     void resetTetrominoPos(Tetromino &tetromino) const;
@@ -47,6 +45,12 @@ private:
     bool m_swappable = true;
     bool m_pauseToggleable = true;
     bool m_pause = false;
+	bool m_spacePressed = false;
+	bool m_leftPressed = false;
+	bool m_rightPressed = false;
+	bool m_zPressed = false;
+	bool m_upPressed = false;
+	bool m_rPressed = false;
 
     std::random_device m_rd;
     std::mt19937 m_rng;

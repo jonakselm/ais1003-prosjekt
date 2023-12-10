@@ -3,21 +3,20 @@
 #ifndef TETRIS_BOARDVIEW_HPP
 #define TETRIS_BOARDVIEW_HPP
 
-#include "threepp/threepp.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include "Board.hpp"
 #include "Tetromino/Tetromino.hpp"
 
-typedef std::unique_ptr<threepp::Mesh> TetroBlock;
-typedef std::array<TetroBlock, 4> VisualTetromino;
 
 class BoardView
 {
 public:
     enum class Piece { Current, Next, Hold };
 
-    BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size);
+    BoardView();
 
-    void onWindowResize(const threepp::WindowSize &size);
+	void initText(const sf::Vector2i &size);
 
     // TODO: Make code more efficient
     void updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData);
@@ -28,25 +27,24 @@ public:
     void setLines(unsigned int lines);
     void setLevel(unsigned int level);
 
+	void draw(sf::RenderTarget &target) const;
+
 private:
     // Non const because static
-    static threepp::Color intToColor(int color);
+    static sf::Color intToColor(int color);
 
-    void updateBlock(TetroBlock &block, int x, int y, threepp::Color color);
+    void updateBlock(sf::RectangleShape &block, int x, int y, sf::Color color);
 
-    void createBlock(TetroBlock &block, int x, int y, threepp::Color color);
+    void createBlock(sf::RectangleShape &block, int x, int y, sf::Color color);
 
+    std::array<sf::RectangleShape, Board::HEIGHT> m_border;
+    std::array<sf::RectangleShape, Board::BOARD_SIZE> m_board;
+	std::array<sf::RectangleShape, 4> m_currentTetromino;
+ 	std::array<sf::RectangleShape, 4> m_nextTetromino;
+    std::array<sf::RectangleShape, 4> m_holdTetromino;
 
-    threepp::GLRenderer &m_renderer;
-    threepp::Scene &m_scene;
-
-    std::array<TetroBlock, Board::HEIGHT> m_border;
-    std::array<TetroBlock, Board::BOARD_SIZE> m_board;
-    VisualTetromino m_currentTetromino;
-    VisualTetromino m_nextTetromino;
-    VisualTetromino m_holdTetromino;
-
-    threepp::TextHandle &m_score, &m_lines, &m_level, &m_next, &m_hold;
+	sf::Font m_font;
+	sf::Text m_score, m_lines, m_level, m_next, m_hold;
     static constexpr int NEXT_OFFSET_X = 11, NEXT_OFFSET_Y = 9;
     static constexpr int HOLD_OFFSET_X = 16, HOLD_OFFSET_Y = 9;
 };

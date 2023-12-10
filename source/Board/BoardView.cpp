@@ -1,63 +1,97 @@
 #include "BoardView.hpp"
-#include "Utility.hpp"
+#include <SFML/Graphics/RectangleShape.hpp>
 
-BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size)
-    : m_renderer(renderer),
-      m_scene(scene),
-      m_score(m_renderer.textHandle("Score: 0")),
-      m_lines(m_renderer.textHandle("Lines: 0")),
-      m_level(m_renderer.textHandle("Level: 1")),
-      m_next(m_renderer.textHandle("Next:")),
-      m_hold(m_renderer.textHandle("Hold:"))
+BoardView::BoardView()
 {
     for (int i = 0; i < m_border.size(); i++)
     {
-        m_border[i] = createBox({ static_cast<float>(Board::WIDTH), static_cast<float>(i) }, threepp::Color::gray);
-        m_scene.add(*m_border[i]);
-    }
-    // Set text position
-    onWindowResize(size);
+		auto &rect = m_border[i];
+		rect.setSize({ 30, 30 });
+		rect.setPosition({ static_cast<float>(Board::WIDTH) * 30, static_cast<float>(i) * 30 });
+		rect.setFillColor(sf::Color(128, 128, 128));
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(-1);
+	}
+	for (int i = 0; i < m_board.size(); i++)
+	{
+		auto &rect = m_board[i];
+		rect.setSize({ 30, 30 });
+		rect.setPosition({ static_cast<float>(i % Board::WIDTH) * 30, static_cast<float>(i / Board::WIDTH) * 30 });
+		rect.setFillColor(sf::Color::Black);
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(-1);
+	}
+	for (auto &rect : m_currentTetromino)
+	{
+		rect.setSize({ 30, 30 });
+		rect.setFillColor(sf::Color::Black);
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(-1);
+	}
+	for (auto &rect : m_holdTetromino)
+	{
+		rect.setSize({ 30, 30 });
+		rect.setFillColor(sf::Color::Black);
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(-1);
+	}
+	for (auto &rect : m_nextTetromino)
+	{
+		rect.setSize({ 30, 30 });
+		rect.setFillColor(sf::Color::Black);
+		rect.setOutlineColor(sf::Color::Black);
+		rect.setOutlineThickness(-1);
+	}
+	if (!m_font.loadFromFile("../DejaVuSans.ttf"))
+	{
+		exit(-1);
+	}
+	m_score.setFont(m_font);
+	setScore(0);
+	m_lines.setFont(m_font);
+	setLines(0);
+	m_level.setFont(m_font);
+	setLevel(0);
+	m_next.setFont(m_font);
+	m_next.setString("Next");
+	m_hold.setFont(m_font);
+	m_hold.setString("Hold");
+	initText({ 600, 600 });
 }
 
-void BoardView::onWindowResize(const threepp::WindowSize &size)
+void BoardView::initText(const sf::Vector2i &size)
 {
-    m_score.scale = size.height / 200;
-    m_score.setPosition(size.width * 0.56, size.height * 0.02);
-    m_lines.scale = size.height / 200;
-    m_lines.setPosition(size.width * 0.56, size.height * 0.1);
-    m_level.scale = size.height / 200;
-    m_level.setPosition(size.width * 0.56, size.height * 0.18);
-    m_next.scale = size.height / 200;
-    m_next.setPosition(size.width * 0.56, size.height * 0.34);
-    m_hold.scale = size.height / 200;
-    m_hold.setPosition(size.width * 0.82, size.height * 0.34);
+    m_score.setPosition(size.x * 0.56, size.y * 0.02);
+    m_score.setCharacterSize(30);
+    m_lines.setPosition(size.x * 0.56, size.y * 0.1);
+    m_lines.setCharacterSize(30);
+    m_level.setPosition(size.x * 0.56, size.y * 0.18);
+    m_level.setCharacterSize(30);
+    m_next.setPosition(size.x * 0.56, size.y * 0.34);
+    m_next.setCharacterSize(30);
+    m_hold.setPosition(size.x * 0.82, size.y * 0.34);
+    m_hold.setCharacterSize(30);
 }
 
 void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData)
 {
-    // Remove old
-    for (auto &block : m_board)
-    {
-        if (block)
-        {
-            m_scene.remove(*block);
-            block.reset();
-        }
-    }
-    // Add new
     for (int i = 0; i < boardData.size(); i++)
     {
         if (boardData[i])
         {
-            m_board[i] = createBox({  float(i % Board::WIDTH), float(i / Board::WIDTH) }, intToColor(boardData[i]));
-            m_scene.add(*m_board[i]);
+            m_board[i].setPosition({  float(i % Board::WIDTH) * 30, float(i / Board::WIDTH) * 30 });
+			m_board[i].setFillColor(intToColor(boardData[i]));
         }
+		else
+		{
+			m_board[i].setFillColor(sf::Color::Black);
+		}
     }
 }
 
 void BoardView::updateTetromino(const Tetromino *const tetroData, Piece piece)
 {
-    VisualTetromino *tetroPtr = nullptr;
+	std::array<sf::RectangleShape, 4> *tetroPtr = nullptr;
 
     int offsetX = 0;
     int offsetY = 0;
@@ -95,15 +129,9 @@ void BoardView::updateTetromino(const Tetromino *const tetroData, Piece piece)
             {
                 if (int colorData = tetroData->getElement(x, y, rotation))
                 {
-                    auto &block = (*tetroPtr)[tetroBlock++];
-                    if (block)
-                    {
-                        updateBlock(block, x + offsetX, y + offsetY, intToColor(colorData));
-                    }
-                    else
-                    {
-                        createBlock(block, x + offsetX, y + offsetY, intToColor(colorData));
-                    }
+					float posX = static_cast<float>(x + offsetX) * 30;
+					float posY = static_cast<float>(y + offsetY) * 30;
+					updateBlock((*tetroPtr)[tetroBlock++], posX, posY, intToColor(colorData));
                 }
             }
         }
@@ -112,67 +140,91 @@ void BoardView::updateTetromino(const Tetromino *const tetroData, Piece piece)
     {
         for (auto &block : *tetroPtr)
         {
-            m_scene.remove(*block);
-            block.reset();
+			block.setFillColor(sf::Color::Black);
         }
     }
 }
 
 void BoardView::setScore(unsigned int score)
 {
-    m_score.setText("Score: " + std::to_string(score));
+    m_score.setString("Score: " + std::to_string(score));
 }
 
 void BoardView::setLines(unsigned int lines)
 {
-    m_lines.setText("Lines: " + std::to_string(lines));
+    m_lines.setString("Lines: " + std::to_string(lines));
 }
 
 void BoardView::setLevel(unsigned int level)
 {
     // Add 1 because it is also used for indexing an array
-    m_level.setText("Level: " + std::to_string(level + 1));
+    m_level.setString("Level: " + std::to_string(level + 1));
 }
 
-threepp::Color BoardView::intToColor(int color)
+void BoardView::draw(sf::RenderTarget &target) const
+{
+	for (const auto& rect : m_holdTetromino)
+	{
+		target.draw(rect);
+	}
+	for (const auto& rect : m_nextTetromino)
+	{
+		target.draw(rect);
+	}
+	for (const auto& rect : m_border)
+	{
+		target.draw(rect);
+	}
+	for (const auto& rect : m_board)
+	{
+		target.draw(rect);
+	}
+	for (const auto& rect : m_currentTetromino)
+	{
+		target.draw(rect);
+	}
+	target.draw(m_hold);
+	target.draw(m_next);
+	target.draw(m_score);
+	target.draw(m_lines);
+	target.draw(m_level);
+}
+
+sf::Color BoardView::intToColor(int color)
 {
     switch (color)
     {
     default:
     case Tetromino::Color::Cyan:
-        return threepp::Color::cyan;
+        return sf::Color::Cyan;
         break;
     case Tetromino::Color::Yellow:
-        return threepp::Color::yellow;
+        return sf::Color::Yellow;
         break;
     case Tetromino::Color::Purple:
-        return threepp::Color::purple;
+		return sf::Color(128, 0, 128);
         break;
     case Tetromino::Color::Blue:
-        return threepp::Color::blue;
+		return sf::Color::Blue;
         break;
     case Tetromino::Color::Orange:
-        return threepp::Color::orange;
+		return sf::Color(255, 127, 0);
         break;
     case Tetromino::Color::Green:
-        return threepp::Color(0, 255, 0);
+		return sf::Color::Green;
         break;
     case Tetromino::Color::Red:
-        return threepp::Color::red;
+		return sf::Color::Red;
         break;
     }
 }
 
-void BoardView::updateBlock(TetroBlock &block, int x, int y, threepp::Color color)
+void BoardView::updateBlock(sf::RectangleShape &block, int x, int y, sf::Color color)
 {
-    block->position = { static_cast<float>(x), static_cast<float>(y), 0 };
-    auto material = threepp::MeshBasicMaterial::create();
-    material->color = color;
-    block->setMaterial(material);
+	block.setPosition({ static_cast<float>(x), static_cast<float>(y) });
+	block.setFillColor(color);
 }
 
-void BoardView::createBlock(TetroBlock &block, int x, int y, threepp::Color color)
+void BoardView::createBlock(sf::RectangleShape &block, int x, int y, sf::Color color)
 {
-    block = createBox({static_cast<float>(x), static_cast<float>(y)}, color);
-    m_scene.add(*block);
 }

@@ -1,0 +1,11 @@
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/CMakeFiles/tetris.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/CMakeFiles/edit_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/CMakeFiles/rebuild_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/CMakeFiles/edit_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/CMakeFiles/rebuild_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Board/CMakeFiles/libBoard.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Board/CMakeFiles/edit_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Board/CMakeFiles/rebuild_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Tetromino/CMakeFiles/libTetromino.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Tetromino/CMakeFiles/edit_cache.dir
+/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Tetromino/CMakeFiles/rebuild_cache.dir

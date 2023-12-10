@@ -1,9 +1,10 @@
 #include "BoardController.hpp"
 #include "TetrominoPieces.hpp"
+#include <SFML/Window/Keyboard.hpp>
 
 
-BoardController::BoardController(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size)
-    : m_view(renderer, scene, size),
+BoardController::BoardController()
+    : m_view(),
       m_rng(m_rd()),
       m_tetroDist(0, 6)
 {
@@ -13,15 +14,13 @@ BoardController::BoardController(threepp::GLRenderer &renderer, threepp::Scene &
     m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next) ;
 }
 
-void BoardController::onWindowResize(const threepp::WindowSize& size)
-{
-    m_view.onWindowResize(size);
-}
 
 void BoardController::update(float dt)
 {
     if (!m_pause)
     {
+		handleInput();
+
         m_elapsedTime += dt;
         // Check if falling piece is out of bounds and reposition it accordingly
         // Moving down and grounding blocks
@@ -45,122 +44,119 @@ void BoardController::update(float dt)
             }
         }
     }
-}
-
-void BoardController::onKeyPressed(threepp::KeyEvent keyEvent)
-{
-    if (!m_pause)
-    {
-        switch (keyEvent.key)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+	{
+        if (m_pauseToggleable && !m_pause)
         {
-        case threepp::Key::SPACE:
-            // Instant place down
-            while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
-            {
-                moveTetromino(0, 1);
-                m_score += 1;
-            }
-            groundTetromino();
-            break;
-        case threepp::Key::DOWN:
-            // Move faster
-            m_timeThreshold = 0.05;
-            break;
-        case threepp::Key::LEFT:
-            // Go left
-            if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
-            {
-                moveTetromino(-1, 0);
-            }
-            break;
-        case threepp::Key::RIGHT:
-            // Go Right
-            if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
-            {
-                moveTetromino(1, 0);
-            }
-            break;
-        case threepp::Key::Z:
-            // Rotate Left
-            if (m_board.canDo(Board::Action::RotateLeft, *m_tetromino))
-            {
-                m_tetromino->rotation--;
-                m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
-            }
-            clampXToBoard();
-            break;
-        case threepp::Key::UP:
-            // Rotate right
-            if (m_board.canDo(Board::Action::RotateRight, *m_tetromino))
-            {
-                m_tetromino->rotation++;
-                m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
-            }
-            clampXToBoard();
-            break;
-        case threepp::Key::R:
-            restart();
-            break;
-        case threepp::Key::C:
-            if (m_swappable)
-            {
-                swapHold();
-            }
-            break;
-        case threepp::Key::P:
-            if (m_pauseToggleable && !m_pause)
-            {
-                m_pause = true;
-                m_pauseToggleable = false;
-            }
-            break;
+            m_pause = true;
+            m_pauseToggleable = false;
         }
     }
 }
 
-void BoardController::onKeyReleased(threepp::KeyEvent keyEvent)
+void BoardController::draw(sf::RenderTarget &target) const
 {
-    switch (keyEvent.key)
-    {
-        // Set time threshold back to normal
-    case threepp::Key::DOWN:
-        m_timeThreshold = m_times[m_level];
-        break;
-    case threepp::Key::P:
-        if (m_pauseToggleable && m_pause)
-        {
-            m_pause = false;
-        }
-        else
-        {
-            m_pauseToggleable = true;
-        }
-        break;
-    }
+	m_view.draw(target);
 }
 
-void BoardController::onKeyRepeat(threepp::KeyEvent keyEvent)
+void BoardController::handleInput()
 {
-    if (!m_pause)
-    {
-        switch (keyEvent.key)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && !m_spacePressed)
+	{
+		m_spacePressed = true;
+        // Instant place down
+        while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
         {
-        case threepp::Key::LEFT:
-            // Go left
-            if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
-            {
-                moveTetromino(-1, 0);
-            }
-            break;
-        case threepp::Key::RIGHT:
-            // Go Right
-            if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
-            {
-                moveTetromino(1, 0);
-            }
-            break;
+            moveTetromino(0, 1);
+            m_score += 1;
         }
-    }
+        groundTetromino();
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+	{
+		m_spacePressed = false;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+	{
+        // Move faster
+        m_timeThreshold = 0.05;
+	}
+	else
+	{
+		m_timeThreshold = m_times[m_level];
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && !m_leftPressed)
+	{
+		m_leftPressed = true;
+        // Go left
+        if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
+        {
+            moveTetromino(-1, 0);
+        }
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+	{
+		m_leftPressed = false;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && !m_rightPressed)
+	{
+		m_rightPressed = true;
+        // Go Right
+        if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
+        {
+            moveTetromino(1, 0);
+        }
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+	{
+		m_rightPressed = false;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z) && !m_zPressed)
+	{
+		m_zPressed = true;
+        // Rotate Left
+        if (m_board.canDo(Board::Action::RotateLeft, *m_tetromino))
+        {
+            m_tetromino->rotation--;
+            m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+        }
+        clampXToBoard();
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
+	{
+		m_zPressed = false;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && !m_upPressed)
+	{
+		m_upPressed = true;
+        // Rotate right
+        if (m_board.canDo(Board::Action::RotateRight, *m_tetromino))
+        {
+            m_tetromino->rotation++;
+            m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
+        }
+        clampXToBoard();
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+	{
+		m_upPressed = false;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R) && !m_rPressed)
+	{
+		m_rPressed = true;
+        restart();
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+	{
+		m_rPressed = false;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::C))
+	{
+        if (m_swappable)
+        {
+            swapHold();
+        }
+	}
 }
 
 void BoardController::moveTetromino(int x, int y)
@@ -191,7 +187,6 @@ void BoardController::groundTetromino()
         m_level = std::min(m_lines / 10, static_cast<int>(m_times.size() - 1));
         m_timeThreshold = m_times.at(m_level);
 
-        m_view.updateBoard(m_board.getBoard());
         m_view.setLevel(m_level);
         m_view.setLines(m_lines);
     }

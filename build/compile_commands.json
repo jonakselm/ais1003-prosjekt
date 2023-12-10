@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build",
+  "command": "/usr/bin/g++  -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Board -g -std=gnu++20 -o CMakeFiles/tetris.dir/main.cpp.o -c /home/jonaksel/Documents/Programming/AIS1003-prosjekt/main.cpp",
+  "file": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/main.cpp",
+  "output": "CMakeFiles/tetris.dir/main.cpp.o"
+},
+{
+  "directory": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Board",
+  "command": "/usr/bin/g++  -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Board -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Tetromino -g -std=gnu++20 -o CMakeFiles/libBoard.dir/Board.cpp.o -c /home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Board/Board.cpp",
+  "file": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Board/Board.cpp",
+  "output": "source/Board/CMakeFiles/libBoard.dir/Board.cpp.o"
+},
+{
+  "directory": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Board",
+  "command": "/usr/bin/g++  -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Board -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Tetromino -g -std=gnu++20 -o CMakeFiles/libBoard.dir/BoardController.cpp.o -c /home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Board/BoardController.cpp",
+  "file": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Board/BoardController.cpp",
+  "output": "source/Board/CMakeFiles/libBoard.dir/BoardController.cpp.o"
+},
+{
+  "directory": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Board",
+  "command": "/usr/bin/g++  -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Board -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Tetromino -g -std=gnu++20 -o CMakeFiles/libBoard.dir/BoardView.cpp.o -c /home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Board/BoardView.cpp",
+  "file": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Board/BoardView.cpp",
+  "output": "source/Board/CMakeFiles/libBoard.dir/BoardView.cpp.o"
+},
+{
+  "directory": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/build/source/Tetromino",
+  "command": "/usr/bin/g++  -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include -I/home/jonaksel/Documents/Programming/AIS1003-prosjekt/include/Tetromino -g -std=gnu++20 -o CMakeFiles/libTetromino.dir/Tetromino.cpp.o -c /home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Tetromino/Tetromino.cpp",
+  "file": "/home/jonaksel/Documents/Programming/AIS1003-prosjekt/source/Tetromino/Tetromino.cpp",
+  "output": "source/Tetromino/CMakeFiles/libTetromino.dir/Tetromino.cpp.o"
+}
+]

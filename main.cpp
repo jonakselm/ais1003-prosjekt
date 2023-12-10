@@ -1,49 +1,27 @@
 #include "BoardController.hpp"
-#include "threepp/threepp.hpp"
+#include "SFML/Graphics.hpp"
 #include <iostream>
-
-using namespace threepp;
 
 int main()
 {
-    Canvas canvas("Tetris", {{"aa", 4}});
-    GLRenderer renderer(canvas.size());
-    renderer.setClearColor(Color::black);
+	sf::RenderWindow window(sf::VideoMode(600, 600), "SFML Tetris");
 
-    // Funke kun med partall
-    // Creating camera 20x20
-    int size = 20;
-    auto camera = OrthographicCamera::create(-size / 2, size / 2, -size / 2, size / 2);
-    camera->position.z = 1;
-    camera->position.x = float(size) / 2 - 0.5f;
-    camera->position.y = float(size) / 2 - 0.5f;
-
-    auto scene = Scene::create();
-    //GameBoard board(*scene);
-
-    renderer.enableTextRendering();
-
-    Clock clock;
-
-    BoardController bc(renderer, *scene, canvas.size());
-
-    canvas.addKeyListener(&bc);
-
-    int c;
-
-    canvas.onWindowResize([&](const WindowSize &size)
+	BoardController bc;
+	sf::Clock clock;
+	while (window.isOpen())
     {
-        camera->updateProjectionMatrix();
-        renderer.setSize(size);
-        bc.onWindowResize(size);
-    });
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+		bc.update(clock.restart().asSeconds());
 
-    clock.start();
-    canvas.animate([&]()
-    {
-        bc.update(clock.getDelta());
-        renderer.render(*scene, *camera);
-        c++;
-    });
-    std::cout << (float)c / clock.getElapsedTime() << std::endl;
+        window.clear();
+		bc.draw(window);
+        window.display();
+    }
+	return 0;
+
 }

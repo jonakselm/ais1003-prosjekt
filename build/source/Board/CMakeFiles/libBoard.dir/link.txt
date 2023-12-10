@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblibBoard.a CMakeFiles/libBoard.dir/Board.cpp.o CMakeFiles/libBoard.dir/BoardController.cpp.o CMakeFiles/libBoard.dir/BoardView.cpp.o
+/usr/bin/ranlib liblibBoard.a
