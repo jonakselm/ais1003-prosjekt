@@ -3,6 +3,9 @@
 This is an attempt at making tetris using the MVC coding pattern,
 using threepp for rendering using the OpenGL rendering API.
 
+By using the MVC coding pattern the rendering engine can easily be
+changed, as the rendering code is located only mostly in the view.
+
 It has most of the functionality of the modern version of tetris,
 and has a hold function, a preview of the next piece and a display
 of the score.

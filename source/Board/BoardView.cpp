@@ -4,11 +4,11 @@
 BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const threepp::WindowSize &size)
     : m_renderer(renderer),
       m_scene(scene),
-      m_score(m_renderer.textHandle("Score: 0")),
-      m_lines(m_renderer.textHandle("Lines: 0")),
-      m_level(m_renderer.textHandle("Level: 1")),
-      m_next(m_renderer.textHandle("Next:")),
-      m_hold(m_renderer.textHandle("Hold:"))
+      m_scoreText(m_renderer.textHandle("Score: 0")),
+      m_lineText(m_renderer.textHandle("Lines: 0")),
+      m_levelText(m_renderer.textHandle("Level: 1")),
+      m_nextText(m_renderer.textHandle("Next:")),
+      m_holdText(m_renderer.textHandle("Hold:"))
 {
     for (int i = 0; i < m_border.size(); i++)
     {
@@ -21,16 +21,16 @@ BoardView::BoardView(threepp::GLRenderer &renderer, threepp::Scene &scene, const
 
 void BoardView::onWindowResize(const threepp::WindowSize &size)
 {
-    m_score.scale = size.height / 200;
-    m_score.setPosition(size.width * 0.56, size.height * 0.02);
-    m_lines.scale = size.height / 200;
-    m_lines.setPosition(size.width * 0.56, size.height * 0.1);
-    m_level.scale = size.height / 200;
-    m_level.setPosition(size.width * 0.56, size.height * 0.18);
-    m_next.scale = size.height / 200;
-    m_next.setPosition(size.width * 0.56, size.height * 0.34);
-    m_hold.scale = size.height / 200;
-    m_hold.setPosition(size.width * 0.82, size.height * 0.34);
+    m_scoreText.scale = size.height / 200;
+    m_scoreText.setPosition(size.width * 0.56, size.height * 0.02);
+    m_linesText.scale = size.height / 200;
+    m_linesText.setPosition(size.width * 0.56, size.height * 0.1);
+    m_levelText.scale = size.height / 200;
+    m_levelText.setPosition(size.width * 0.56, size.height * 0.18);
+    m_nextText.scale = size.height / 200;
+    m_nextText.setPosition(size.width * 0.56, size.height * 0.34);
+    m_holdText.scale = size.height / 200;
+    m_holdText.setPosition(size.width * 0.82, size.height * 0.34);
 }
 
 void BoardView::updateBoard(const std::array<int, Board::BOARD_SIZE> &boardData)
@@ -120,18 +120,18 @@ void BoardView::updateTetromino(const Tetromino *const tetroData, Piece piece)
 
 void BoardView::setScore(unsigned int score)
 {
-    m_score.setText("Score: " + std::to_string(score));
+    m_scoreText.setText("Score: " + std::to_string(score));
 }
 
 void BoardView::setLines(unsigned int lines)
 {
-    m_lines.setText("Lines: " + std::to_string(lines));
+    m_lineText.setText("Lines: " + std::to_string(lines));
 }
 
 void BoardView::setLevel(unsigned int level)
 {
     // Add 1 because it is also used for indexing an array
-    m_level.setText("Level: " + std::to_string(level + 1));
+    m_levelText.setText("Level: " + std::to_string(level + 1));
 }
 
 threepp::Color BoardView::intToColor(int color)

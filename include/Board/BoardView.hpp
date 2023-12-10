@@ -46,7 +46,8 @@ private:
     VisualTetromino m_nextTetromino;
     VisualTetromino m_holdTetromino;
 
-    threepp::TextHandle &m_score, &m_lines, &m_level, &m_next, &m_hold;
+    threepp::TextHandle &m_scoreText, &m_lineText,
+		&m_levelText, &m_nextText, &m_holdText;
     static constexpr int NEXT_OFFSET_X = 11, NEXT_OFFSET_Y = 9;
     static constexpr int HOLD_OFFSET_X = 16, HOLD_OFFSET_Y = 9;
 };
