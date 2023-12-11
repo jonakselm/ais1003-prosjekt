@@ -5,20 +5,6 @@ Board::Board()
     :
     m_board({ 0 })
 {
-    /*for (auto &cell : m_board)
-    {
-        cell = 1;
-    }*/
-    /*for (int y = 0; y < m_currentTetromino.getHeight(); y++)
-    {
-        for (int x = 0; x < m_currentTetromino.getWidth(); x++)
-        {
-            if (m_currentTetromino.getElement(x, y))
-            {
-                m_board[x + y * WIDTH] = 1;
-            }
-        }
-    }*/
 }
 
 void Board::clearLine(int lineNumber)

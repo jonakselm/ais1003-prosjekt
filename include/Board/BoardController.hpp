@@ -5,7 +5,6 @@
 
 #include "BoardView.hpp"
 #include <random>
-#include <iostream>
 
 class BoardController : public threepp::KeyListener
 {
@@ -51,8 +50,6 @@ private:
     std::random_device m_rd;
     std::mt19937 m_rng;
     std::uniform_int_distribution<int> m_tetroDist;
-
-    int m_i = 0, m_o = 0, m_t = 0, m_j = 0, m_l = 0, m_s = 0, m_z = 0;
 };
 
 #endif//TETRIS_BOARDCONTROLLER_HPP
