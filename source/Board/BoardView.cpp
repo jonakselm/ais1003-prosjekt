@@ -23,8 +23,8 @@ void BoardView::onWindowResize(const threepp::WindowSize &size)
 {
     m_scoreText.scale = size.height / 200;
     m_scoreText.setPosition(size.width * 0.56, size.height * 0.02);
-    m_linesText.scale = size.height / 200;
-    m_linesText.setPosition(size.width * 0.56, size.height * 0.1);
+    m_lineText.scale = size.height / 200;
+    m_lineText.setPosition(size.width * 0.56, size.height * 0.1);
     m_levelText.scale = size.height / 200;
     m_levelText.setPosition(size.width * 0.56, size.height * 0.18);
     m_nextText.scale = size.height / 200;
