@@ -7,7 +7,6 @@ using namespace threepp;
 int main()
 {
     Canvas canvas("Tetris", {{"aa", 4}});
-    canvas.setSize({ 600, 600 });
     GLRenderer renderer(canvas.size());
     renderer.setClearColor(Color::black);
 
