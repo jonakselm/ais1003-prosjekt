@@ -51,7 +51,16 @@ void BoardController::update(float dt)
             m_pause = true;
             m_pauseToggleable = false;
         }
+		else if (m_pauseToggleable && m_pause)
+		{
+			m_pause = false;
+			m_pauseToggleable = false;
+		}
     }
+	else
+	{
+		m_pauseToggleable = true;
+	}
 }
 
 void BoardController::draw(sf::RenderTarget &target) const
