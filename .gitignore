@@ -1,4 +1,11 @@
 cmake-build*/
 .idea/
 build/
-
+local.properties
+.gradle
+.cache/
+android.iml
+app/build
+app/.cxx
+app/.externalNativeBuild
+app/src/main/obj

@@ -1,7 +1,20 @@
 #include "BoardView.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 
+auto fontCtor = [](const std::string &path)
+{
+	sf::Font font;
+	font.loadFromFile(path);
+	return font;
+};
+
 BoardView::BoardView()
+	: m_font(fontCtor("tuffy.ttf")),
+	m_score(font, "Score: 0"),
+	m_lines(font, "Lines: 0"),
+	m_level(font, "Level: 1"),
+	m_next(font, "Next:"),
+	m_hold(font, "Hold:")
 {
     for (int i = 0; i < m_border.size(); i++)
     {
@@ -42,34 +55,20 @@ BoardView::BoardView()
 		rect.setOutlineColor(sf::Color::Black);
 		rect.setOutlineThickness(-1);
 	}
-	if (!m_font.loadFromFile("../DejaVuSans.ttf"))
-	{
-		exit(-1);
-	}
-	m_score.setFont(m_font);
-	setScore(0);
-	m_lines.setFont(m_font);
-	setLines(0);
-	m_level.setFont(m_font);
-	setLevel(0);
-	m_next.setFont(m_font);
-	m_next.setString("Next");
-	m_hold.setFont(m_font);
-	m_hold.setString("Hold");
 	initText({ 600, 600 });
 }
 
 void BoardView::initText(const sf::Vector2i &size)
 {
-    m_score.setPosition(size.x * 0.56, size.y * 0.02);
+    m_score.setPosition(sf::Vector2f(size.x * 0.56, size.y * 0.02));
     m_score.setCharacterSize(30);
-    m_lines.setPosition(size.x * 0.56, size.y * 0.1);
+    m_lines.setPosition(sf::Vector2f(size.x * 0.56, size.y * 0.1));
     m_lines.setCharacterSize(30);
-    m_level.setPosition(size.x * 0.56, size.y * 0.18);
+	m_level.setPosition(sf::Vector2f(size.x * 0.56, size.y * 0.18));
     m_level.setCharacterSize(30);
-    m_next.setPosition(size.x * 0.56, size.y * 0.34);
+	m_next.setPosition(sf::Vector2f(size.x * 0.56, size.y * 0.34));
     m_next.setCharacterSize(30);
-    m_hold.setPosition(size.x * 0.82, size.y * 0.34);
+	m_hold.setPosition(sf::Vector2f(size.x * 0.82, size.y * 0.34));
     m_hold.setCharacterSize(30);
 }
 

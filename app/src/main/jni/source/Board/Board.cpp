@@ -48,7 +48,7 @@ int Board::groundTetromino(const Tetromino &t)
             if (int color = t.getElement(x, y))
             {
                 int i = x + t.posX + (y + t.posY) * WIDTH;
-                if (i > 0)
+                if (i > 0 && i < m_board.size())
                 {
                     m_board[i] = color;
                 }

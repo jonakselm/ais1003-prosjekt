@@ -8,10 +8,10 @@
 #include <memory>
 #include <iostream>
 
-class BoardController 
+class BoardController
 {
 public:
-    BoardController();
+    BoardController(const sf::Vector2i &size);
 
     void update(float dt);
 
@@ -27,6 +27,7 @@ private:
 
     void swapHold();
     void restart();
+    void moveDownIfPossible();
 
 
     BoardView m_view;
@@ -57,6 +58,8 @@ private:
     std::uniform_int_distribution<int> m_tetroDist;
 
     int m_i = 0, m_o = 0, m_t = 0, m_j = 0, m_l = 0, m_s = 0, m_z = 0;
+
+    sf::Vector2i m_fingerPos;
 };
 
 #endif//TETRIS_BOARDCONTROLLER_HPP
