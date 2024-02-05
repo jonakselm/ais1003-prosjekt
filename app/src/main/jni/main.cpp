@@ -5,7 +5,7 @@
 #include <SFML/System.hpp>
 
 #include "android-specifics.hpp"
-#include "include/Board/BoardController.hpp"
+#include "Board/BoardController.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
             }
         }
         if (active)
-            bc.update(clock.restart().asSeconds());
+            bc.update(clock.restart());
 
         if (active)
         {

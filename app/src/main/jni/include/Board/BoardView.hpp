@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include "Board.hpp"
-#include "../Tetromino/Tetromino.hpp"
+#include "Tetromino/Tetromino.hpp"
 
 
 class BoardView

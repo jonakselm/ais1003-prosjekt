@@ -1,7 +1,7 @@
 #ifndef THREEPP_TETRIS_BOARD_HPP
 #define THREEPP_TETRIS_BOARD_HPP
 
-#include "../Tetromino/Tetromino.hpp"
+#include "Tetromino/Tetromino.hpp"
 #include <array>
 #include <vector>
 
