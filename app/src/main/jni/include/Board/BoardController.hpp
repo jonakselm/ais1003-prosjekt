@@ -40,7 +40,7 @@ private:
     std::unique_ptr<Tetromino> m_holdTetromino;
 
 	sf::Time m_timeThreshold = sf::milliseconds(500);
-	sf::Time m_elapsedTime = sf::Time::Zero;
+	sf::Time m_elapsedTime; 
     unsigned int m_score = 0;
     int m_lines = 0;
     int m_level = 0;
@@ -64,12 +64,19 @@ private:
     int m_i = 0, m_o = 0, m_t = 0, m_j = 0, m_l = 0, m_s = 0, m_z = 0;
 
     sf::Vector2i m_fingerRefPoint;
-	int m_fingerMoveThreshold = 30;
+	sf::Vector2i m_fingerCurrentPoint;
 	bool m_refIsSet = false;
 	FingerDirection m_fingerDir = FingerDirection::None;
 	sf::Time m_timeTouched = sf::Time::Zero;
-	const sf::Time m_rotationTimeThreshold = sf::milliseconds(500);
 	bool m_fingerWasDown = false;
+
+	static constexpr int DIRECTIONAL_THRESHOLD = 10;
+	static constexpr sf::Time ROTATION_TIME_LIMIT = sf::milliseconds(350);
+	static constexpr int MOVE_DOWN_THRESHOLD = 15;
+	static constexpr int MOVE_HORIZONTAL_THRESHOLD = 30;
+	static constexpr sf::Time HARD_DROP_TIME_LIMIT = sf::milliseconds(600);
+	static constexpr int HARD_DROP_THRESHOLD = 75; 
+	static constexpr int HARD_DROP_LIMIT = 350; 
 };
 
 #endif//TETRIS_BOARDCONTROLLER_HPP

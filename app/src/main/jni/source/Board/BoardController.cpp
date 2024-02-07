@@ -61,6 +61,7 @@ void BoardController::handleInput(sf::Time dt)
     if (sf::Touch::isDown(0))
     {
 		m_timeTouched += dt;
+		m_fingerCurrentPoint = sf::Touch::getPosition(0);
 
 		// Set refpoint if not done already
 		if (!m_refIsSet)
@@ -69,28 +70,31 @@ void BoardController::handleInput(sf::Time dt)
 			m_refIsSet = true;
 			m_fingerWasDown = true;
 		}
+		if (m_fingerDir == FingerDirection::None)
+		{
+			const auto &ref = m_fingerRefPoint;
+			const auto &current = m_fingerCurrentPoint;
+			if (std::abs(ref.x - current.x) > DIRECTIONAL_THRESHOLD ||
+					std::abs(ref.y - current.y) > DIRECTIONAL_THRESHOLD)
+			{
+				if (std::abs(ref.y - current.y) > std::abs(ref.x - current.x)) 
+				{
+					m_fingerDir = FingerDirection::Vertical;
+				}
+				else
+				{
+					m_fingerDir = FingerDirection::Horizontal;
+				}
+			}
+		}
 		// Starting handling
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && !m_spacePressed)
-        {
-            m_spacePressed = true;
-            // Instant place down
-            while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
-            {
-                moveTetromino(0, 1);
-                m_score += 1;
-            }
-            groundTetromino();
-        }
-        else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-        {
-            m_spacePressed = false;
-        }
 		// Move down
-        if (sf::Touch::getPosition(0).y > m_fingerRefPoint.y + m_fingerMoveThreshold &&
-				m_fingerDir != FingerDirection::Horizontal)
+        if ((m_timeTouched > HARD_DROP_TIME_LIMIT || m_fingerCurrentPoint.y - m_fingerRefPoint.y > HARD_DROP_LIMIT) &&
+				m_fingerDir != FingerDirection::Horizontal &&
+				sf::Touch::getPosition(0).y > m_fingerRefPoint.y + MOVE_DOWN_THRESHOLD)
+			
         {
 			m_fingerRefPoint.y = sf::Touch::getPosition(0).y;
-			m_fingerDir = FingerDirection::Vertical;
             moveDownIfPossible();
             m_elapsedTime = sf::Time::Zero;
         }
@@ -99,10 +103,9 @@ void BoardController::handleInput(sf::Time dt)
             m_timeThreshold = m_times[m_level];
         }
 		// M̀ove left
-        if (sf::Touch::getPosition(0).x < m_fingerRefPoint.x - m_fingerMoveThreshold &&
+        if (sf::Touch::getPosition(0).x < m_fingerRefPoint.x - MOVE_HORIZONTAL_THRESHOLD &&
 				m_fingerDir != FingerDirection::Vertical)
         {
-			m_fingerDir = FingerDirection::Horizontal;
 			m_fingerRefPoint.x = sf::Touch::getPosition(0).x;
             // Go left
             if (m_board.canDo(Board::Action::MoveLeft, *m_tetromino))
@@ -115,10 +118,9 @@ void BoardController::handleInput(sf::Time dt)
             m_leftPressed = false;
         }
 		// Move right
-        if (sf::Touch::getPosition(0).x > m_fingerRefPoint.x + m_fingerMoveThreshold &&
+        if (sf::Touch::getPosition(0).x > m_fingerRefPoint.x + MOVE_HORIZONTAL_THRESHOLD &&
 				m_fingerDir != FingerDirection::Vertical)
         {
-			m_fingerDir = FingerDirection::Horizontal;
 			m_fingerRefPoint.x = sf::Touch::getPosition(0).x;
             // Go Right
             if (m_board.canDo(Board::Action::MoveRight, *m_tetromino))
@@ -158,7 +160,7 @@ void BoardController::handleInput(sf::Time dt)
 	else
 	{
 		// Handle rotation
-		if (m_fingerWasDown && m_timeTouched < m_rotationTimeThreshold &&
+		if (m_fingerWasDown && m_timeTouched < ROTATION_TIME_LIMIT &&
 				m_fingerDir == FingerDirection::None)
 		{
 			if (m_fingerRefPoint.x > m_screenSize.x / 2)
@@ -182,6 +184,22 @@ void BoardController::handleInput(sf::Time dt)
 				clampXToBoard();
 			}
 		}
+		// Hard drop
+        if (m_fingerDir == FingerDirection::Vertical && m_timeTouched < HARD_DROP_TIME_LIMIT &&
+				m_fingerCurrentPoint.y - m_fingerRefPoint.y > HARD_DROP_THRESHOLD)
+        {
+            m_spacePressed = true;
+            // Instant place down
+            while (m_board.canDo(Board::Action::MoveDown, *m_tetromino))
+            {
+                moveTetromino(0, 1);
+                m_score += 1;
+            }
+            groundTetromino();
+			m_elapsedTime = sf::Time::Zero;
+			m_fingerRefPoint = m_fingerCurrentPoint;
+        }
+
 		m_refIsSet = false;
 		m_fingerDir = FingerDirection::None;
 		m_timeTouched = sf::Time::Zero;
