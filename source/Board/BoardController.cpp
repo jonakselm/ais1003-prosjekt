@@ -11,7 +11,7 @@ BoardController::BoardController()
     m_tetromino = randomTetromino();
     m_nextTetromino = randomTetromino();
     m_view.updateTetromino(m_tetromino.get(), BoardView::Piece::Current);
-    m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next) ;
+    m_view.updateTetromino(m_nextTetromino.get(), BoardView::Piece::Next);
 }
 
 
@@ -46,11 +46,11 @@ void BoardController::update(float dt)
     }
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
 	{
-        if (m_pauseToggleable && !m_pause)
-        {
-            m_pause = true;
-            m_pauseToggleable = false;
-        }
+		if (m_pauseToggleable && !m_pause)
+		{
+			m_pause = true;
+			m_pauseToggleable = false;
+		}
 		else if (m_pauseToggleable && m_pause)
 		{
 			m_pause = false;
